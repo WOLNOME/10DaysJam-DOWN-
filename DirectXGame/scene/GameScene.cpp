@@ -15,10 +15,55 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	input_ = input;
 	audio_ = audio;
 
+	// ビュープロジェクションの初期化
+	viewProjection_.farZ = 2000.0f;
+	viewProjection_.Initialize();
+
+	// スプライトテクスチャ
+
+	// スプライトの生成
+	
+	// モデルテクスチャ
+
+	// モデルの生成
+
+	// インスタンスの生成
+	gameCamera_ = std::make_unique<GameCamera>();
+	wall_ = std::make_unique<Wall>();
+
+	// インスタンス初期化
+	gameCamera_->Initialize();
+	wall_->Initialize();
+	
+
+
 
 }
 
 void GameScene::Update() {
+	// カメラの更新処理
+	gameCamera_->Update();
+	viewProjection_.matView = gameCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = gameCamera_->GetViewProjection().matProjection;
+	// ビュープロジェクション行列の更新と転送
+	viewProjection_.TransferMatrix();
+
+	//オブジェクトの更新処理
+	wall_->Update();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneNow");
@@ -53,6 +98,9 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
+
+	//モデル
+	wall_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();

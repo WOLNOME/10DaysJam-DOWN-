@@ -7,6 +7,9 @@
 #include "Sprite.h"
 #include "ViewProjection.h"
 #include "WorldTransform.h"
+#include "GameCamera.h"
+#include "Wall.h"
+#include <memory>
 
 /// <summary>
 /// ゲームシーン
@@ -47,8 +50,12 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	//音
 	Audio* audio_ = nullptr;
+	//ビュープロジェクション
+	ViewProjection viewProjection_;
 
-
+	//インスタンス
+	std::unique_ptr<GameCamera> gameCamera_ = nullptr;
+	std::unique_ptr<Wall> wall_ = nullptr;
 	
 
 	/// <summary>
