@@ -107,10 +107,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2d\ImGuiManager.cpp" />
+    <ClCompile Include="3d\WorldTransformEx.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Script\Matrix.cpp" />
+    <ClCompile Include="Script\MyBase.cpp" />
+    <ClCompile Include="Script\MyTools.cpp" />
+    <ClCompile Include="Script\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -142,6 +147,10 @@
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="math\Vector4.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Script\Matrix.h" />
+    <ClInclude Include="Script\MyBase.h" />
+    <ClInclude Include="Script\MyTools.h" />
+    <ClInclude Include="Script\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">
