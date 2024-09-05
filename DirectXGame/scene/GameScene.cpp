@@ -119,3 +119,76 @@ void GameScene::Draw() {
 
 #pragma endregion
 }
+
+void GameScene::LoadEnemyPopData(const string& fileName) {
+	ifstream file;
+	file.open("./Resources/enemyPop.csv");
+	assert(file.is_open());
+
+	enemyPopCommands.clear();
+
+	enemyPopCommands << file.rdbuf();
+
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands() {
+
+	// 待機処理
+	if (isWaiting_) {
+		waitTimer_--;
+		if (waitTimer_ <= 0) {
+			isWaiting_ = false;
+		}
+		return;
+	}
+
+	std::string command;
+
+	while (getline(enemyPopCommands, command)) {
+		std::istringstream line_stream(command);
+
+		std::string word;
+		getline(line_stream, word, ',');
+
+		if (word.find("//") == 0) {
+			continue;
+		}
+
+		if (word.find("POP") == 0) {
+			Vector3 pos;
+			int type;
+
+			getline(line_stream, word, ',');
+			pos.x = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			pos.y = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			pos.z = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			type = atoi(word.c_str());
+
+			CreateEnemy(type, pos);
+		} else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			int32_t waitTime = atoi(word.c_str());
+
+			isWaiting_ = true;
+			waitTimer_ = waitTime;
+
+			break;
+		}
+	}
+}
+
+void GameScene::CreateEnemy(const int& enemyType, const Vector3& position) {
+	unique_ptr<Enemy> enemy = make_unique<Enemy>();
+
+	enemy->Initialize(enemyModels_, enemyType, position);
+
+	enemies_.push_back(enemy);
+}
