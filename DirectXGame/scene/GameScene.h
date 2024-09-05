@@ -1,5 +1,5 @@
 #pragma once
-
+#include "BaseScene.h"
 #include "Audio.h"
 #include "DirectXCommon.h"
 #include "Input.h"
@@ -11,8 +11,7 @@
 /// <summary>
 /// ゲームシーン
 /// </summary>
-class GameScene {
-
+class GameScene : public BaseScene {
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
@@ -22,27 +21,35 @@ public: // メンバ関数
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~GameScene();
+	~GameScene() override;
 
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	void Initialize();
+	void Initialize(Input* input, Audio* audio) override;
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update();
+	void Update() override;
 
 	/// <summary>
 	/// 描画
 	/// </summary>
-	void Draw();
+	void Draw() override;
+
+public:
+	SCENE GetNextScene() override { return NextScene; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
+	//入力
 	Input* input_ = nullptr;
+	//音
 	Audio* audio_ = nullptr;
+
+
+	
 
 	/// <summary>
 	/// ゲームシーン用
