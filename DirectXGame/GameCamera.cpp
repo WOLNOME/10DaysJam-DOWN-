@@ -1,5 +1,5 @@
 #include "GameCamera.h"
-#include "Function.h"
+#include "Script/Matrix.h"
 
 GameCamera::GameCamera() {}
 
@@ -25,5 +25,5 @@ void GameCamera::Update() {
 	worldTransform_.UpdateMatrix();
 
 	// カメラオブジェクトワールド行列からビュー行列を計算する
-	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
+	viewProjection_.matView = Matrix::Inverse(worldTransform_.matWorld_);
 }

@@ -1,4 +1,5 @@
 #include "Wall.h"
+#include "Script/MyTools.h"
 
 Wall::Wall() {}
 
@@ -26,7 +27,7 @@ void Wall::Initialize() {
 void Wall::Update() {
 	for (int i = 0; i < 2; i++) {
 		// 速度加算処理
-		worldTransformWall_[i].translation_ = Add(worldTransformWall_[i].translation_, fallVelocity_);
+		worldTransformWall_[i].translation_ = MyTools::Add(worldTransformWall_[i].translation_, fallVelocity_);
 		// 座標が450を超えたらループする
 		if (worldTransformWall_[i].translation_.y > (kWallLength_ / 2) + 50) {
 			worldTransformWall_[i].translation_.y = -((kWallLength_ - 50) + (kWallLength_ / 2))+fallVelocity_.y;

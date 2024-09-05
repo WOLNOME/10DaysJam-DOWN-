@@ -2,7 +2,6 @@
 #include "WorldTransform.h"
 #include "ViewProjection.h"
 #include "Model.h"
-#include "Function.h"
 #include <memory>
 
 class Wall {
