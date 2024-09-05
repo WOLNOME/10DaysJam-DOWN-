@@ -2,12 +2,9 @@
 #include <cassert>
 
 /// 初期化
-void Player::Initialize(Model* model, uint32_t textureHandle) {
-	// NULLポインタチェック
-	assert(model);
-	
+void Player::Initialize(const std::vector<Model*> models, uint32_t textureHandle) {
 	// 3Dモデルの生成
-	model_ = model;
+	BaseCharacter::Initialize(models);
 
 	// テクスチャ
 	textureHandle_ = textureHandle;
@@ -70,8 +67,17 @@ void Player::Rotate() {
 	}
 }
 
+Vector3 Player::GetCenter() const {
+	Vector3 worldPos;
+
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
 /// 描画
-void Player::Draw(ViewProjection& viewProjection) {
-	// 3Dモデルを描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+void Player::Draw(ViewProjection& viewProjection) { 
+	BaseCharacter::Draw(viewProjection); 
 }
