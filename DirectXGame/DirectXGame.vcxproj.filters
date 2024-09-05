@@ -52,6 +52,21 @@
     <Filter Include="ソース ファイル\2d">
       <UniqueIdentifier>{814a0f6d-f847-4c45-856d-4688fa4c9e6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\collision">
+      <UniqueIdentifier>{1e7e10b8-6f6b-4db1-8f7e-5c2589cfb17f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision">
+      <UniqueIdentifier>{6bd43e31-dc67-481b-98c0-a417786b810a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\3d">
+      <UniqueIdentifier>{4c96f420-7c0a-4811-b734-bfe17dc4e180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\func">
+      <UniqueIdentifier>{9e09fa87-0980-4ef7-afc7-74aa671f1c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\func">
+      <UniqueIdentifier>{8587c4c9-26ce-4180-b590-ce26b1f65bfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -68,6 +83,33 @@
     </ClCompile>
     <ClCompile Include="2d\ImGuiManager.cpp">
       <Filter>ソース ファイル\2d</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="collider.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionManager.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="collisionRecord.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseCharacter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldTrasformEx.cpp">
+      <Filter>ソース ファイル\3d</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix4x4Function.cpp">
+      <Filter>ソース ファイル\func</Filter>
+    </ClCompile>
+    <ClCompile Include="Vector3Function.cpp">
+      <Filter>ソース ファイル\func</Filter>
+    </ClCompile>
+    <ClCompile Include="myFunction.cpp">
+      <Filter>ソース ファイル\func</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +199,33 @@
     </ClInclude>
     <ClInclude Include="3d\ObjectColor.h">
       <Filter>ヘッダー ファイル\3d</Filter>
+    </ClInclude>
+    <ClInclude Include="enemy.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="collider.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionManager.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionRecord.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="collisionTypeIdDef.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseCharacter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Matrix4x4Function.h">
+      <Filter>ヘッダー ファイル\func</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector3Function.h">
+      <Filter>ヘッダー ファイル\func</Filter>
+    </ClInclude>
+    <ClInclude Include="myFunction.h">
+      <Filter>ヘッダー ファイル\func</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

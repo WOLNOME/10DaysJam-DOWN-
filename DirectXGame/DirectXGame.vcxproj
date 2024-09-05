@@ -107,10 +107,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2d\ImGuiManager.cpp" />
+    <ClCompile Include="BaseCharacter.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="collider.cpp" />
+    <ClCompile Include="collisionManager.cpp" />
+    <ClCompile Include="collisionRecord.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Matrix4x4Function.cpp" />
+    <ClCompile Include="myFunction.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
+    <ClCompile Include="Vector3Function.cpp" />
+    <ClCompile Include="WorldTrasformEx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\ImGuiManager.h" />
@@ -132,16 +141,25 @@
     <ClInclude Include="3d\ViewProjection.h" />
     <ClInclude Include="3d\WorldTransform.h" />
     <ClInclude Include="audio\Audio.h" />
+    <ClInclude Include="BaseCharacter.h" />
     <ClInclude Include="base\DirectXCommon.h" />
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="collider.h" />
+    <ClInclude Include="collisionManager.h" />
+    <ClInclude Include="collisionRecord.h" />
+    <ClInclude Include="collisionTypeIdDef.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />
     <ClInclude Include="math\Vector3.h" />
     <ClInclude Include="math\Vector4.h" />
+    <ClInclude Include="Matrix4x4Function.h" />
+    <ClInclude Include="myFunction.h" />
     <ClInclude Include="scene\GameScene.h" />
+    <ClInclude Include="Vector3Function.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Resources\shaders\TerrainPS.hlsl">
