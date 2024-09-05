@@ -1,19 +1,31 @@
 #include "GameScene.h"
 #include "TextureManager.h"
+#include "ImGuiManager.h"
 #include <cassert>
 
-GameScene::GameScene() {}
+GameScene::GameScene() {
+	//現在のシーンを設定
+	NextScene = Game;
+}
 
 GameScene::~GameScene() {}
 
-void GameScene::Initialize() {
-
+void GameScene::Initialize(Input* input, Audio* audio) {
 	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
+	input_ = input;
+	audio_ = audio;
+
+
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+
+#ifdef _DEBUG
+	ImGui::Begin("GameSceneNow");
+
+	ImGui::End();
+#endif // _DEBUG
+}
 
 void GameScene::Draw() {
 
