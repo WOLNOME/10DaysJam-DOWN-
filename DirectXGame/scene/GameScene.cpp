@@ -122,7 +122,7 @@ void GameScene::Draw() {
 
 void GameScene::LoadEnemyPopData(const string& fileName) {
 	ifstream file;
-	file.open("./Resources/enemyPop.csv");
+	file.open(fileName);
 	assert(file.is_open());
 
 	enemyPopCommands.clear();
@@ -190,5 +190,5 @@ void GameScene::CreateEnemy(const int& enemyType, const Vector3& position) {
 
 	enemy->Initialize(enemyModels_, enemyType, position);
 
-	enemies_.push_back(enemy);
+	enemies_.push_back(move(enemy));
 }

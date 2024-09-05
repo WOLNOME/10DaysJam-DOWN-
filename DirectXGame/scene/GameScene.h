@@ -67,8 +67,8 @@ private: // メンバ変数
 	ViewProjection viewProjection_;
 
 	//インスタンス
-	std::unique_ptr<GameCamera> gameCamera_ = nullptr;
-	std::unique_ptr<Wall> wall_ = nullptr;
+	unique_ptr<GameCamera> gameCamera_ = nullptr;
+	unique_ptr<Wall> wall_ = nullptr;
 	
 
 	/// <summary>

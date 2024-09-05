@@ -107,7 +107,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="2d\ImGuiManager.cpp" />
-    <ClCompile Include="3d\WorldTransformEx.cpp" />
     <ClCompile Include="BaseScene.cpp" />
     <ClCompile Include="BaseCharacter.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
