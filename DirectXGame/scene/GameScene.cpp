@@ -15,10 +15,55 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	input_ = input;
 	audio_ = audio;
 
+	// ビュープロジェクションの初期化
+	viewProjection_.farZ = 2000.0f;
+	viewProjection_.Initialize();
+
+	// スプライトテクスチャ
+
+	// スプライトの生成
+	
+	// モデルテクスチャ
+
+	// モデルの生成
+
+	// インスタンスの生成
+	gameCamera_ = std::make_unique<GameCamera>();
+	wall_ = std::make_unique<Wall>();
+
+	// インスタンス初期化
+	gameCamera_->Initialize();
+	wall_->Initialize();
+	
+
+
 
 }
 
 void GameScene::Update() {
+	// カメラの更新処理
+	gameCamera_->Update();
+	viewProjection_.matView = gameCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = gameCamera_->GetViewProjection().matProjection;
+	// ビュープロジェクション行列の更新と転送
+	viewProjection_.TransferMatrix();
+
+	//オブジェクトの更新処理
+	wall_->Update();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneNow");
@@ -54,6 +99,9 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	//モデル
+	wall_->Draw(viewProjection_);
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -70,4 +118,77 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::LoadEnemyPopData(const string& fileName) {
+	ifstream file;
+	file.open(fileName);
+	assert(file.is_open());
+
+	enemyPopCommands.clear();
+
+	enemyPopCommands << file.rdbuf();
+
+	file.close();
+}
+
+void GameScene::UpdateEnemyPopCommands() {
+
+	// 待機処理
+	if (isWaiting_) {
+		waitTimer_--;
+		if (waitTimer_ <= 0) {
+			isWaiting_ = false;
+		}
+		return;
+	}
+
+	std::string command;
+
+	while (getline(enemyPopCommands, command)) {
+		std::istringstream line_stream(command);
+
+		std::string word;
+		getline(line_stream, word, ',');
+
+		if (word.find("//") == 0) {
+			continue;
+		}
+
+		if (word.find("POP") == 0) {
+			Vector3 pos;
+			int type;
+
+			getline(line_stream, word, ',');
+			pos.x = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			pos.y = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			pos.z = (float)stof(word.c_str());
+
+			getline(line_stream, word, ',');
+			type = atoi(word.c_str());
+
+			CreateEnemy(type, pos);
+		} else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			int32_t waitTime = atoi(word.c_str());
+
+			isWaiting_ = true;
+			waitTimer_ = waitTime;
+
+			break;
+		}
+	}
+}
+
+void GameScene::CreateEnemy(const int& enemyType, const Vector3& position) {
+	unique_ptr<Enemy> enemy = make_unique<Enemy>();
+
+	enemy->Initialize(enemyModels_, enemyType, position);
+
+	enemies_.push_back(move(enemy));
 }
