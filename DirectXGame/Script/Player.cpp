@@ -2,12 +2,9 @@
 #include <cassert>
 
 /// 初期化
-void Player::Initialize(const std::vector<Model*> models, uint32_t textureHandle) {
+void Player::Initialize(const std::vector<Model*> models) {
 	// 3Dモデルの生成
 	BaseCharacter::Initialize(models);
-
-	// テクスチャ
-	textureHandle_ = textureHandle;
 
 	// ワールドトランスフォームの初期化
 	worldTransform_.Initialize();

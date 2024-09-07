@@ -26,16 +26,18 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	// モデルテクスチャ
 
 	// モデルの生成
+	
 
 	// インスタンスの生成
 	gameCamera_ = std::make_unique<GameCamera>();
 	wall_ = std::make_unique<Wall>();
+	player_ = std::make_unique<Player>();
 
 	// インスタンス初期化
 	gameCamera_->Initialize();
 	wall_->Initialize();
+	//player_->Initialize(playerModels_);
 	
-
 
 
 }

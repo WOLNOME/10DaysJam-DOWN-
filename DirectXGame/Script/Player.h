@@ -13,8 +13,7 @@ public:
 	/// 初期化
 	/// </summary>
 	/// <param name="models">モデル</param>
-	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Initialize(const std::vector<Model*> models, uint32_t textureHandle);
+	void Initialize(const std::vector<Model*> models);
 
 	/// <summary>
 	/// 更新
@@ -43,8 +42,6 @@ public:
 	void Draw(ViewProjection& viewProjection);
 
 private:
-	// テクスチャハンドル
-	uint32_t textureHandle_;
 	// キーボード入力
 	Input* input_ = nullptr;
 

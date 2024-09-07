@@ -14,6 +14,7 @@
 #include "GameCamera.h"
 #include "Wall.h"
 #include <memory>
+#include "Script/Player.h"
 
 using namespace std;
 
@@ -75,6 +76,12 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	
+	// 自キャラ
+	unique_ptr<Player> player_ = nullptr;
+
+	// 自キャラモデル
+	vector<Model*> playerModels_;
+
 	// 敵リスト
 	list<unique_ptr<Enemy>> enemies_;
 
