@@ -16,6 +16,15 @@ public:
 public://関数
 
 public://ゲッター
+	//現在の時間
+	int GetPhaseTimer() { return phaseTimer_; }
+	//1フェーズの時間
+	int GetKPhaseTime() { return kPhaseTime_; }
+	//壁の長さ
+	float GetKWallLength() { return kWallLength_; }
+	//落下速度
+	float GetFallingSpeed() { return fallVelocity_.y; }
+
 
 public://セッター
 

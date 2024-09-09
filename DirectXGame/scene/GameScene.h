@@ -47,8 +47,10 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-public:
+public://ゲッター
 	SCENE GetNextScene() override { return NextScene; }
+	//インスタンス
+	Wall* GetWall() { return wall_.get(); }
 
 	/// <summary>
 	/// 敵の生成関数
