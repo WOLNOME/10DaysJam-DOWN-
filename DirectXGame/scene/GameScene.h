@@ -80,6 +80,7 @@ private: // メンバ変数
 	unique_ptr<Player> player_ = nullptr;
 
 	// 自キャラモデル
+	unique_ptr<Model> playerModel_;
 	vector<Model*> playerModels_;
 
 	// 敵リスト

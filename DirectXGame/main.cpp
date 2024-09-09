@@ -92,6 +92,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		imguiManager->Draw();
 		// 描画終了
 		dxCommon->PostDraw();
+
+		if (input->TriggerKey(DIK_ESCAPE)) {
+			break;
+		}
 	}
 
 	// 各種解放

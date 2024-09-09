@@ -26,7 +26,8 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	// モデルテクスチャ
 
 	// モデルの生成
-	
+	playerModel_.reset(Model::CreateFromOBJ("player"));
+	playerModels_.push_back(playerModel_.get());
 
 	// インスタンスの生成
 	gameCamera_ = std::make_unique<GameCamera>();
@@ -36,13 +37,18 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	// インスタンス初期化
 	gameCamera_->Initialize();
 	wall_->Initialize();
-	//player_->Initialize(playerModels_);
+	player_->Initialize(playerModels_);
 	
+	gameCamera_->SetParent(&player_->GetWorldTransform());
 
-
+	// カーソルを非表示
+	ShowCursor(true);
 }
 
 void GameScene::Update() {
+	// プレイヤーの更新処理
+	player_->Update();
+
 	// カメラの更新処理
 	gameCamera_->Update();
 	viewProjection_.matView = gameCamera_->GetViewProjection().matView;
@@ -53,7 +59,7 @@ void GameScene::Update() {
 	//オブジェクトの更新処理
 	wall_->Update();
 
-
+	// 
 
 
 
@@ -103,6 +109,9 @@ void GameScene::Draw() {
 
 	//モデル
 	wall_->Draw(viewProjection_);
+
+	// 自キャラ
+	player_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
