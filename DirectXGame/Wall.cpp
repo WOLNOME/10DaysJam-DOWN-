@@ -20,7 +20,7 @@ void Wall::Initialize() {
 	modelPhaseGround_.reset(Model::CreateFromOBJ("phaseGround"));
 	// 初期位置
 	worldTransformWall_[0].translation_ = {0.0f, 0.0f, 0.0f};
-	worldTransformWall_[1].translation_ = {0.0f, -kWallLength_, 0.0f};
+	worldTransformWall_[1].translation_ = {0.0f, -kWallLength_ + 1, 0.0f};
 	worldTransformBlack_.translation_ = {0.0f, -(kWallLength_ - 50), 0.0f};
 	worldTransformPhaseGround_.translation_ = {0.0f, -kWallLength_, 0.0f};
 	// 変数の初期化
@@ -33,9 +33,9 @@ void Wall::Update() {
 	if (phaseTimer_ >= kPhaseTime_) {
 		isComingPhaseGround_ = true;
 	}
-	//休憩ゾーン処理
+	// 休憩ゾーン処理
 	if (isComingPhaseGround_) {
-		//速度加算処理
+		// 速度加算処理
 		worldTransformPhaseGround_.translation_ = MyTools::Add(worldTransformPhaseGround_.translation_, fallVelocity_);
 		if (worldTransformPhaseGround_.translation_.y >= -kPlayerHeight_) {
 			isComingPhaseGround_ = false;
@@ -43,7 +43,7 @@ void Wall::Update() {
 			worldTransformPhaseGround_.translation_.y = -kPlayerHeight_;
 		}
 	}
-	//壁の処理
+	// 壁の処理
 	for (int i = 0; i < 2; i++) {
 		// 速度加算処理
 		if (!isLanding_) {

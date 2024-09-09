@@ -14,7 +14,9 @@ public:
 	void Draw(const ViewProjection& viewProjection);
 
 public://関数
+
 public://ゲッター
+
 public://セッター
 
 private://変数
@@ -34,7 +36,6 @@ private:
 	const float kWallLength_ = 3200.0f;
 	//落下速度
 	Vector3 fallVelocity_;
-
 
 private://フェーズ処理変数
 	//各フェーズの時間
