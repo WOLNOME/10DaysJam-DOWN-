@@ -1,9 +1,10 @@
 #pragma once
-#include "MyBase.h"
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include <assert.h>
 #include <vector>
+#include <assert.h>
+#include <algorithm>
+#include "MyBase.h"
 
 class MyTools :
 	public MyBase
@@ -20,16 +21,6 @@ public:
 	/// ツール関数 ここから
 	/// 
 
-	/// <summary>
-	/// マウスカーソルの座標を取得する関数
-	/// </summary>
-	/// <param name="kWindowWidth">ウィンドウの横幅</param>
-	/// <param name="kWindowHeight">ウィンドウの縦幅</param>
-	/// <param name="viewMatrix">ビュー行列</param>
-	/// <param name="projectionMatrix">プロジェクション行列</param>
-	/// <returns></returns>
-	static Vector3 GetMousePosition(const float& kWindowWidth, const float& kWindowHeight, const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix);
-	
 	/// <summary>
 	/// 範囲内の値を返す関数
 	/// </summary>
@@ -96,6 +87,14 @@ public:
 	static bool IsCollision(const Segment& segment, const Plane& plane);
 
 	/// <summary>
+	/// カプセルと平面の衝突判定を返す関数
+	/// </summary>
+	/// <param name="capsule">カプセル</param>
+	/// <param name="plane">平面</param>
+	/// <returns></returns>
+	static bool IsCollision(const Capsule& capsule, const Plane& plane);
+
+	/// <summary>
 	/// 三角形と直線の衝突判定を返す関数
 	/// </summary>
 	/// <param name="triangle">三角形</param>
@@ -159,6 +158,65 @@ public:
 	/// <returns></returns>
 	static bool IsCollision(const AABB& aabb, const Segment& segment);
 
+	/// <summary>
+	/// OBBと球の衝突判定を返す関数
+	/// </summary>
+	/// <param name="obb">OBB</param>
+	/// <param name="sphere">球</param>
+	/// <returns></returns>
+	static bool IsCollision(const OBB& obb, const Sphere& sphere);
+
+	/// <summary>
+	/// OBBと直線の衝突判定を返す関数
+	/// </summary>
+	/// <param name="obb">OBB</param>
+	/// <param name="line">直線</param>
+	/// <returns></returns>
+	static bool IsCollision(const OBB& obb, const Line& line);
+
+	/// <summary>
+	/// OBBと半直線の衝突判定を返す関数
+	/// </summary>
+	/// <param name="obb">OBB</param>
+	/// <param name="ray">半直線</param>
+	/// <returns></returns>
+	static bool IsCollision(const OBB& obb, const Ray& ray);
+
+	/// <summary>
+	/// OBBと線分の衝突判定を返す関数
+	/// </summary>
+	/// <param name="obb">OBB</param>
+	/// <param name="segment">線分</param>
+	/// <returns></returns>
+	static bool IsCollision(const OBB& obb, const Segment& segment);
+
+	/// <summary>
+	/// OBBとOBBの衝突判定を返す関数
+	/// </summary>
+	/// <param name="obb1">OBB1</param>
+	/// <param name="obb2">OBB2</param>
+	/// <returns></returns>
+	static bool IsCollision(const OBB& obb1, const OBB& obb2);
+
+	/// <summary>
+	/// 分離軸に投影された軸成分から投影線分長を算出
+	/// </summary>
+	/// <param name="Seg"></param>
+	/// <param name="e1"></param>
+	/// <param name="e2"></param>
+	/// <param name="e3"></param>
+	/// <returns></returns>
+	static float LenSegOnSeparateAxis(const Vector3* Seg, const Vector3* e1, const Vector3* e2, const Vector3 *e3);
+
+	/// <summary>
+	/// カプセルの直線と平面の交点を求める関数
+	/// </summary>
+	/// <param name="capsule">カプセル</param>
+	/// <param name="plane">平面</param>
+	/// <param name="t">媒介変数</param>
+	/// <returns></returns>
+	static Vector3 PointOfIntersection(const Capsule& capsule, const Plane& plane, float& t);
+
 	/// 
 	/// ツール関数 ここまで
 	///
@@ -166,7 +224,7 @@ public:
 	/// 
 	/// 2次元ベクトル ここから
 	///
-	
+
 	/// <summary>
 	/// 2次元ベクトルの内積を返す関数
 	/// </suumary>
@@ -209,7 +267,7 @@ public:
 	/// 
 	/// 3次元ベクトル ここから
 	/// 
-	
+
 	/// <summary>
 	/// 3次元ベクトルの加算を返す関数
 	/// </summary>
@@ -256,6 +314,13 @@ public:
 	/// </summary>
 	/// <param name="v">ベクトル</param>
 	static Vector3 Normalize(const Vector3& v);
+
+	/// <summary>
+	/// 3次元ベクトルを標準化して返す関数
+	/// </summary>
+	/// <param name="v">ベクトル</param>
+	/// <returns></returns>
+	static Vector3 Standardization(const Vector3& v);
 
 	/// <summary>
 	/// 線形補間
@@ -316,33 +381,16 @@ public:
 	/// <returns></returns>
 	static Vector3 Perpendicular(const Vector3& vector);
 
+	/// <summary>
+	/// 反射ベクトルを求める関数
+	/// </summary>
+	/// <param name="input">入射ベクトル</param>
+	/// <param name="normal">法線</param>
+	/// <returns></returns>
+	static Vector3 Reflect(const Vector3& input, const Vector3& normal);
+
 	/// 
 	/// 3次元ベクトル ここまで
 	/// 
 
-	/// 
-	/// 描画 ここから
-	/// 
-	
-	/// <summary>
-	/// 2次元ベクトルの表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="vector">表示したいベクトルの変数</param>
-	/// <param name="label">表示したいベクトルの名前</param>
-	static void VectorScreenPrintf(int x, int y, const Vector2& vector, const char* label);
-
-	/// <summary>
-	/// 3次元ベクトルの表示
-	/// </summary>
-	/// <param name="x">表示するデバッグ用文字列の左上座標 X</param>
-	/// <param name="y">表示するデバッグ用文字列の左上座標 Y</param>
-	/// <param name="vector">表示したいベクトルの変数</param>
-	/// <param name="label">表示したいベクトルの名前</param>
-	static void VectorScreenPrintf(int x, int y, const Vector3& vector, const char* label);
-
-	/// 
-	/// 描画 ここまで
-	/// 
 };
