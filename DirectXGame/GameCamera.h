@@ -17,6 +17,8 @@ public: // ゲッター
 	const ViewProjection& GetViewProjection() { return viewProjection_; }
 
 public: // セッター
+	void SetParent(const WorldTransform* parent) { worldTransform_.parent_ = parent; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
