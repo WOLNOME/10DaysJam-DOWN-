@@ -29,26 +29,55 @@ void Player::Initialize(const std::vector<Model*> models) {
 
 /// 更新
 void Player::Update() {
-	MouseMove();
+	if (!isDebug_) {
+		// マウスによる視点移動
+		MouseMove();
+	}
 
 	// 移動処理
 	Translation();
 
-	worldTransform_.UpdateMatrix();
-
 #ifdef _DEBUG
+	if (input_->TriggerKey(DIK_P)) {
+		isDebug_ = !isDebug_;
+	}
+	ShowCursor(isDebug_);
+
+	ImGui::SetNextWindowPos(ImVec2(10, 30), ImGuiCond_Once);   // ウィンドウの座標(プログラム起動時のみ読み込み)
+	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Once); // ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Player");
 
 	ImGui::DragFloat3("Translation", &worldTransform_.translation_.x, 0.05f);
+
+	const float kMoveLimitX = 48.0f;
+	const float kMoveLimitZ = 48.0f;
+
+	// 制限
+	worldTransform_.translation_.x = MyTools::Clamp(worldTransform_.translation_.x, -kMoveLimitX, kMoveLimitX);
+	worldTransform_.translation_.z = MyTools::Clamp(worldTransform_.translation_.z, -kMoveLimitZ, kMoveLimitZ);
+	// 移動を消す
+	worldTransform_.translation_.y = 0;
+
 	ImGui::DragFloat3("Rotation", &worldTransform_.rotation_.x, 0.01f);
+
+	// 制限
+	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
+	// 回転を消す
+	worldTransform_.rotation_.z = 0.0f;
+
 	ImGui::DragFloat2("mouseMove", &mouseMove.x, 0.05f);
 	ImGui::DragFloat2("mousePos", &mousePos.x, 0.05f);
+
+	ImGui::Text("Push P Key : mouseLock switching ");
+	ImGui::Checkbox("Debug", &isDebug_);
 
 	ImGui::End();
 
 #endif // _DEBUG
 
+	// 行列の更新・転送
+	worldTransform_.UpdateMatrix();
 
 }
 
@@ -73,10 +102,8 @@ void Player::Translation() {
 	}
 
 	// 移動ベクトルの向きを自キャラの向きに合わせる
-	Matrix4x4 rotationMatrix = Matrix::MakeRotateMatrix4x4(worldTransform_.rotation_.x, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
+	Matrix4x4 rotationMatrix = Matrix::MakeRotateMatrix4x4(0.0f, worldTransform_.rotation_.y, worldTransform_.rotation_.z);
 	move = Matrix::Multiply(move, rotationMatrix);
-
-	move.y = 0;
 
 	// 座標移動(ベクトルの加算)
 	worldTransform_.translation_ = MyTools::Add(worldTransform_.translation_, move);
@@ -84,11 +111,12 @@ void Player::Translation() {
 	const float kMoveLimitX = 48.0f;
 	const float kMoveLimitZ = 48.0f;
 
+	// 制限
 	worldTransform_.translation_.x = MyTools::Clamp(worldTransform_.translation_.x, -kMoveLimitX, kMoveLimitX);
 	worldTransform_.translation_.z = MyTools::Clamp(worldTransform_.translation_.z, -kMoveLimitZ, kMoveLimitZ);
 
-
-
+	// 移動を消す
+	worldTransform_.translation_.y = 0;
 }
 
 /// 旋回処理
@@ -120,8 +148,8 @@ void Player::MouseMove() {
 	worldTransform_.rotation_.x += mouseMove.y;
 	worldTransform_.rotation_.y += mouseMove.x;
 
+	// 制限
 	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
-	worldTransform_.UpdateMatrix();
 }
 
 Vector3 Player::GetCenter() const {

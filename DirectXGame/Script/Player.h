@@ -67,4 +67,7 @@ private:
 	const Vector2 mouseCenter = {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2};
 	Vector2 mousePos;
 
+	bool isDebug_ = false;
+
+
 };

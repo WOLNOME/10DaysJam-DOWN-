@@ -42,7 +42,7 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	gameCamera_->SetParent(&player_->GetWorldTransform());
 
 	// カーソルを非表示
-	ShowCursor(true);
+	ShowCursor(false);
 }
 
 void GameScene::Update() {
