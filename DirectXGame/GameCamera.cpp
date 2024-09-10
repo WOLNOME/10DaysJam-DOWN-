@@ -16,11 +16,13 @@ void GameCamera::Initialize() {
 	viewProjection_.Initialize();
 	
 	//x軸で回転
-	worldTransform_.rotation_.x += 1.57f;
+	//worldTransform_.rotation_.x += 1.57f;
 
 }
 
 void GameCamera::Update() {
+
+
 	// 行列の更新と転送
 	worldTransform_.UpdateMatrix();
 
