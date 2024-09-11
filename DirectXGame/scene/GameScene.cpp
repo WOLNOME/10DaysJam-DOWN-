@@ -55,7 +55,7 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 
 void GameScene::Update() {
 	// プレイヤーの更新処理
-	player_->Update();
+	player_->Update(viewProjection_);
 
 	// カメラの更新処理
 	gameCamera_->Update();
@@ -137,6 +137,8 @@ void GameScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
+
+	player_->DrawUI();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();

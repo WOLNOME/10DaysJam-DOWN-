@@ -25,7 +25,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(ViewProjection& viewProjection);
 
 	/// <summary>
 	/// 移動処理
@@ -41,11 +41,26 @@ public:
 	/// マウスでの視点移動
 	/// </summary>
 	void MouseMove();
+	
+	/// <summary>
+	/// ワールド座標から3Dレティクルの座標を計算
+	/// </summary>
+	void WorldTo3DReticle();
+
+	/// <summary>
+	/// 3Dレティクルの座標から2Dレティクルの座標を計算
+	/// </summary>
+	void Reticle3Dto2D(ViewProjection& viewProjection);
 
 	/// <summary>
 	/// 中心座標の取得
 	/// </summary>
 	Vector3 GetCenter() const override;
+
+	/// <summary>
+	/// 3Dレティクルのワールド座標を取得
+	/// </summary>
+	Vector3 Get3DReticleWorldPosition();
 
 	/// <summary>
 	/// 壁をセット
@@ -58,6 +73,11 @@ public:
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection& viewProjection);
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
 
 private:
 	WorldTransform worldTransform3DReticle_;
