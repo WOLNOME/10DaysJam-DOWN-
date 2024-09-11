@@ -1,6 +1,5 @@
 #include "MyTools.h"
 #include "Matrix.h"
-#include <algorithm>
 #include <iostream>
 
 using namespace std;
@@ -8,25 +7,6 @@ using namespace std;
 /// 
 /// ツール関数 ここから
 /// 
-
-/// マウスカーソルの座標を取得する関数
-Vector3 MyTools::GetMousePosition(const float& kWindowWidth, const float& kWindowHeight, const Matrix4x4& viewMatrix, const Matrix4x4& projectionMatrix)
-{
-	int x = 0, y = 0;
-
-	// クリップ座標に変換
-	float clipX = (2.0f * float(x)) / kWindowWidth - 1.0f;
-	float clipY = 1.0f - (2.0f * float(y)) / kWindowHeight;
-	float clipZ = 0.0f; // スクリーン座標からは深度情報が得られないので適当な値を指定します
-
-	// クリップ座標をカメラ座標に逆変換
-	Vector3 eyeCoords = Matrix::Transform(Vector3(clipX, clipY, clipZ), Matrix::Inverse(projectionMatrix));
-
-	// カメラ座標をワールド座標に逆変換
-	Vector3 worldCoords = Matrix::Transform(eyeCoords, Matrix::Inverse(viewMatrix));
-
-	return worldCoords;
-}
 
 /// 範囲内の値を返す関数
 float MyTools::Clamp(const float& num, const float& min, const float& max)
@@ -47,7 +27,7 @@ float MyTools::Clamp(const float& num, const float& min, const float& max)
 
 /// 線形補間
 float MyTools::Lerp(const float& num1, const float& num2, const float& t)
-{ 
+{
 	return num1 * (1 - t) + num2 * t;
 }
 
@@ -162,6 +142,33 @@ bool MyTools::IsCollision(const Segment& segment, const Plane& plane)
 	return false;
 }
 
+/// カプセルと平面の衝突判定を返す関数
+bool MyTools::IsCollision(const Capsule& capsule, const Plane& plane)
+{
+	float t = 0.0f;
+
+	Vector3 point = PointOfIntersection(capsule, plane, t);
+
+	// 0 < t < 1なら衝突
+	if (t > 0 && t < 1)
+	{
+		return true;
+	}
+	// 範囲外ならtが0,1の時の当たり判定を取る
+	else
+	{
+		// カプセルの最終端
+		Vector3 end = Add(capsule.segment.origin, capsule.segment.diff);
+
+		if (IsCollision(Sphere(capsule.segment.origin, capsule.radius), plane) || IsCollision(Sphere(end, capsule.radius), plane))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 /// 三角形と直線の衝突判定を返す関数
 bool MyTools::IsCollision(const Triangle& triangle, const Line& line)
 {
@@ -255,8 +262,8 @@ bool MyTools::IsCollision(const Triangle& triangle, const Segment& segment)
 /// AABB同士の衝突判定を返す関数
 bool MyTools::IsCollision(const AABB& aabb1, const AABB& aabb2)
 {
-	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) && 
-		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) && 
+	if ((aabb1.min.x <= aabb2.max.x && aabb1.max.x >= aabb2.min.x) &&
+		(aabb1.min.y <= aabb2.max.y && aabb1.max.y >= aabb2.min.y) &&
 		(aabb1.min.z <= aabb2.max.z && aabb1.max.z >= aabb2.min.z))
 	{
 		return true;
@@ -268,9 +275,9 @@ bool MyTools::IsCollision(const AABB& aabb1, const AABB& aabb2)
 bool MyTools::IsCollision(const AABB& aabb, const Sphere& sphere)
 {
 	// 最近接点を求める
-	Vector3 closestPoint{ 
+	Vector3 closestPoint{
 		std::clamp(sphere.center.x, aabb.min.x, aabb.max.x),
-		std::clamp(sphere.center.y, aabb.min.y, aabb.max.y), 
+		std::clamp(sphere.center.y, aabb.min.y, aabb.max.y),
 		std::clamp(sphere.center.z, aabb.min.z, aabb.max.z) };
 
 	// 最近接点と球の中心との距離を求める
@@ -331,8 +338,11 @@ bool MyTools::IsCollision(const AABB& aabb, const Ray& ray)
 
 	if (tmin <= tmax)
 	{
-		// 衝突
-		return true;
+		if (tmax >= 0.0f && tmax <= 1.0f)
+		{
+			// 衝突
+			return true;
+		}
 	}
 	return false;
 }
@@ -340,15 +350,23 @@ bool MyTools::IsCollision(const AABB& aabb, const Ray& ray)
 /// AABBと線分の衝突判定を返す関数
 bool MyTools::IsCollision(const AABB& aabb, const Segment& segment)
 {
+	// 各衝突点の媒介変数
+	float tXmin = (aabb.min.x - segment.origin.x) / segment.diff.x;
+	float tXmax = (aabb.max.x - segment.origin.x) / segment.diff.x;
+	float tYmin = (aabb.min.y - segment.origin.y) / segment.diff.y;
+	float tYmax = (aabb.max.y - segment.origin.y) / segment.diff.y;
+	float tZmin = (aabb.min.z - segment.origin.z) / segment.diff.z;
+	float tZmax = (aabb.max.z - segment.origin.z) / segment.diff.z;
+
 	// 近い方(tが小さい)
-	float tNearX = min((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
-	float tNearY = min((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
-	float tNearZ = min((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
+	float tNearX = min(tXmin, tXmax);
+	float tNearY = min(tYmin, tYmax);
+	float tNearZ = min(tZmin, tZmax);
 
 	// 遠い方(tが大きい)
-	float tFarX = max((aabb.min.x - segment.origin.x) / segment.diff.x, (aabb.max.x - segment.origin.x) / segment.diff.x);
-	float tFarY = max((aabb.min.y - segment.origin.y) / segment.diff.y, (aabb.max.y - segment.origin.y) / segment.diff.y);
-	float tFarZ = max((aabb.min.z - segment.origin.z) / segment.diff.z, (aabb.max.z - segment.origin.z) / segment.diff.z);
+	float tFarX = max(tXmin, tXmax);
+	float tFarY = max(tYmin, tYmax);
+	float tFarZ = max(tZmin, tZmax);
 
 	// AABBとの衝突点(貫通点)のtが小さい方
 	float tmin = max(max(tNearX, tNearY), tNearZ);
@@ -357,10 +375,248 @@ bool MyTools::IsCollision(const AABB& aabb, const Segment& segment)
 
 	if (tmin <= tmax)
 	{
-		// 衝突
-		return true;
+		if ((tmin >= 0.0f && tmin <= 1.0f) || (tmax >= 0.0f && tmax <= 1.0f) || (tmin <= 0 && tmax >= 1))
+		{
+			// 衝突
+			return true;
+		}
 	}
 	return false;
+}
+
+/// OBBと球の衝突判定を返す関数
+bool MyTools::IsCollision(const OBB& obb, const Sphere& sphere)
+{
+	// ワールド行列
+	Matrix4x4 obbWorldMatrix = {
+		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
+		obb.orientations[1].x, obb.orientations[1].y, obb.orientations[1].z, 0,
+		obb.orientations[2].x, obb.orientations[2].y, obb.orientations[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.z, 1
+	};
+	// ワールド逆行列
+	Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
+
+	Vector3 centerInOBBLocalSpace = Matrix::Transform(sphere.center, obbWorldMatrixInverse);
+	AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
+	Sphere sphereOBBLocal = { centerInOBBLocalSpace, sphere.radius };
+
+	// ローカル空間で衝突判定
+	return IsCollision(aabbOBBLocal, sphereOBBLocal);
+}
+
+/// OBBと直線の衝突判定を返す関数
+bool MyTools::IsCollision(const OBB& obb, const Line& line)
+{
+	// ワールド行列
+	Matrix4x4 obbWorldMatrix = {
+		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
+		obb.orientations[1].x, obb.orientations[1].y, obb.orientations[1].z, 0,
+		obb.orientations[2].x, obb.orientations[2].y, obb.orientations[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.z, 1
+	};
+	// ワールド逆行列
+	Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
+
+
+	Vector3 centerInOBBLocalLine = Matrix::Transform(line.origin, obbWorldMatrixInverse);
+	AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
+	Line lineOBBLocal = { centerInOBBLocalLine, line.diff };
+
+	// ローカル空間で衝突判定
+	return IsCollision(aabbOBBLocal, lineOBBLocal);
+}
+
+/// OBBと半直線の衝突判定を返す関数
+bool MyTools::IsCollision(const OBB& obb, const Ray& ray)
+{
+	// ワールド行列
+	Matrix4x4 obbWorldMatrix = {
+		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
+		obb.orientations[1].x, obb.orientations[1].y, obb.orientations[1].z, 0,
+		obb.orientations[2].x, obb.orientations[2].y, obb.orientations[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.z, 1
+	};
+	// ワールド逆行列
+	Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
+
+
+	Vector3 centerInOBBLocalRay = Matrix::Transform(ray.origin, obbWorldMatrixInverse);
+	AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
+	Ray rayOBBLocal = { centerInOBBLocalRay, ray.diff };
+
+	// ローカル空間で衝突判定
+	return IsCollision(aabbOBBLocal, rayOBBLocal);
+}
+
+/// OBBと線分の衝突判定を返す関数
+bool MyTools::IsCollision(const OBB& obb, const Segment& segment)
+{
+	// ワールド行列
+	Matrix4x4 obbWorldMatrix = {
+		obb.orientations[0].x, obb.orientations[0].y, obb.orientations[0].z, 0,
+		obb.orientations[1].x, obb.orientations[1].y, obb.orientations[1].z, 0,
+		obb.orientations[2].x, obb.orientations[2].y, obb.orientations[2].z, 0,
+		obb.center.x, obb.center.y, obb.center.z, 1
+	};
+	// ワールド逆行列
+	Matrix4x4 obbWorldMatrixInverse = Matrix::Inverse(obbWorldMatrix);
+
+
+	Vector3 centerInOBBLocalSegment = Matrix::Transform(segment.origin, obbWorldMatrixInverse);
+	AABB aabbOBBLocal = { .min = { -obb.size.x, -obb.size.y, -obb.size.z }, .max = obb.size };
+	Segment segmentOBBLocal = { centerInOBBLocalSegment, segment.diff };
+
+	// ローカル空間で衝突判定
+	return IsCollision(aabbOBBLocal, segmentOBBLocal);
+}
+
+/// OBBとOBBの衝突判定を返す関数
+bool MyTools::IsCollision(const OBB& obb1, const OBB& obb2)
+{
+	// AABBでの各頂点座標(ローカル座標)を求める
+	Vector3 obb1Vertex[8] =
+	{
+		{ -obb1.size.x, obb1.size.y, -obb1.size.z },	// 左上前
+		{ obb1.size.x, obb1.size.y, -obb1.size.z },		// 右上前
+		{ -obb1.size.x, -obb1.size.y, -obb1.size.z },	// 左下前
+		{ obb1.size.x, -obb1.size.y, -obb1.size.z },	// 右下前
+		{ -obb1.size.x, obb1.size.y, obb1.size.z },		// 左上奥
+		{ obb1.size.x, obb1.size.y, obb1.size.z },		// 右上奥
+		{ -obb1.size.x, -obb1.size.y, obb1.size.z },	// 左下奥
+		{ obb1.size.x, -obb1.size.y, obb1.size.z },		// 右下奥
+	};
+	Vector3 obb2Vertex[8] =
+	{
+		{ -obb2.size.x, obb2.size.y, -obb2.size.z },	// 左上前
+		{ obb2.size.x, obb2.size.y, -obb2.size.z },		// 右上前
+		{ -obb2.size.x, -obb2.size.y, -obb2.size.z },	// 左下前
+		{ obb2.size.x, -obb2.size.y, -obb2.size.z },	// 右下前
+		{ -obb2.size.x, obb2.size.y, obb2.size.z },		// 左上奥
+		{ obb2.size.x, obb2.size.y, obb2.size.z },		// 右上奥
+		{ -obb2.size.x, -obb2.size.y, obb2.size.z },	// 左下奥
+		{ obb2.size.x, -obb2.size.y, obb2.size.z },		// 右下奥
+	};
+
+	// ワールド行列
+	Matrix4x4 obb1WorldMatrix = {
+		obb1.orientations[0].x, obb1.orientations[0].y, obb1.orientations[0].z, 0,
+		obb1.orientations[1].x, obb1.orientations[1].y, obb1.orientations[1].z, 0,
+		obb1.orientations[2].x, obb1.orientations[2].y, obb1.orientations[2].z, 0,
+		obb1.center.x, obb1.center.y, obb1.center.z, 1
+	};
+	Matrix4x4 obb2WorldMatrix = {
+		obb2.orientations[0].x, obb2.orientations[0].y, obb2.orientations[0].z, 0,
+		obb2.orientations[1].x, obb2.orientations[1].y, obb2.orientations[1].z, 0,
+		obb2.orientations[2].x, obb2.orientations[2].y, obb2.orientations[2].z, 0,
+		obb2.center.x, obb2.center.y, obb2.center.z, 1
+	};
+
+	// 各頂点座標(ワールド座標)
+	Vector3 obb1WorldVertex[8];
+	Vector3 obb2WorldVertex[8];
+	for (uint32_t i = 0; i < 8; i++)
+	{
+		obb1WorldVertex[i] = Matrix::Transform(obb1Vertex[i], obb1WorldMatrix);
+		obb2WorldVertex[i] = Matrix::Transform(obb2Vertex[i], obb2WorldMatrix);
+	}
+
+	// 分離軸
+	// 面法線
+	Vector3 obb1NormalX = Matrix::TransformNormal({ obb1.size.x, 0.0f, 0.0f }, obb1WorldMatrix);
+	Vector3 obb1NormalY = Matrix::TransformNormal({ 0.0f, obb1.size.y, 0.0f }, obb1WorldMatrix);
+	Vector3 obb1NormalZ = Matrix::TransformNormal({ 0.0f, 0.0f, obb1.size.z }, obb1WorldMatrix);
+	Vector3 obb2NormalX = Matrix::TransformNormal({ obb2.size.x, 0.0f, 0.0f }, obb2WorldMatrix);
+	Vector3 obb2NormalY = Matrix::TransformNormal({ 0.0f, obb2.size.y, 0.0f }, obb2WorldMatrix);
+	Vector3 obb2NormalZ = Matrix::TransformNormal({ 0.0f, 0.0f, obb2.size.z }, obb2WorldMatrix);
+	// 各辺の組み合わせのクロス積
+	Vector3 cross1 = Cross(obb1NormalX, obb2NormalX);
+	Vector3 cross2 = Cross(obb1NormalX, obb2NormalY);
+	Vector3 cross3 = Cross(obb1NormalX, obb2NormalZ);
+	Vector3 cross4 = Cross(obb1NormalY, obb2NormalX);
+	Vector3 cross5 = Cross(obb1NormalY, obb2NormalY);
+	Vector3 cross6 = Cross(obb1NormalY, obb2NormalZ);
+	Vector3 cross7 = Cross(obb1NormalZ, obb2NormalX);
+	Vector3 cross8 = Cross(obb1NormalZ, obb2NormalY);
+	Vector3 cross9 = Cross(obb1NormalZ, obb2NormalZ);
+
+	// 各方向ベクトルを設定する
+	Vector3 axisOfSeparation[15] = {
+		obb1NormalX, obb1NormalY, obb1NormalZ,
+		obb2NormalX, obb2NormalY, obb2NormalZ,
+		cross1, cross2, cross3,
+		cross4, cross5, cross6,
+		cross7, cross8, cross9
+	};
+	// 正規化
+	Vector3 NAxisOfSeparation[15];
+	for (uint32_t i = 0; i < 15; i++)
+	{
+		NAxisOfSeparation[i] = Normalize(axisOfSeparation[i]);
+	}
+
+	// 変数の用意
+	float obb1Projection[8];			// obb1の各頂点の射影した値
+	float obb2Projection[8];			// obb2の各頂点の射影した値
+	float min1 = 0.0f, max1 = 0.0f, L1 = 0.0f;		// obb1 のデータ
+	float min2 = 0.0f, max2 = 0.0f, L2 = 0.0f;		// obb2 のデータ
+	float sumSpan = 0.0f, longSpan = 0.0f;			// 比較用
+
+	// 分離軸の分ループ
+	for (uint32_t i = 0; i < 15; i++)
+	{
+		// 各頂点を分離軸で射影
+		for (uint32_t l = 0; l < 8; l++)
+		{
+			obb1Projection[l] = Dot(NAxisOfSeparation[i], obb1WorldVertex[l]);
+			obb2Projection[l] = Dot(NAxisOfSeparation[i], obb2WorldVertex[l]);
+		}
+		// 初期値をセット
+		min1 = obb1Projection[0]; max1 = obb1Projection[0];
+		min2 = obb2Projection[0]; max2 = obb2Projection[0];
+		// 各頂点分比較
+		for (uint32_t l = 1; l < 8; l++)
+		{
+			min1 = (std::min)(min1, obb1Projection[l]);
+			max1 = (std::max)(max1, obb1Projection[l]);
+			min2 = (std::min)(min2, obb2Projection[l]);
+			max2 = (std::max)(max2, obb2Projection[l]);
+		}
+		// obb1 と obb2 各射影の長さ
+		L1 = max1 - min1;
+		L2 = max2 - min2;
+
+		// obb1とobb2の合計の長さ
+		sumSpan = L1 + L2;
+		// 最大値と最低値の差分
+		longSpan = (std::max)(max1, max2) - (std::min)(min1, min2);
+		// 分離軸が引けるかどうか
+		// 引ける時、未衝突
+		if (sumSpan < longSpan)
+		{
+			return false;
+		}
+	}
+	// 全ての分離軸が引けない時、衝突判定
+	return true;
+}
+
+/// 分離軸に投影された軸成分から投影線分長を算出
+float MyTools::LenSegOnSeparateAxis(const Vector3* Seg, const Vector3* e1, const Vector3* e2, const Vector3* e3 = 0)
+{
+	float r1 = fabsf(Dot(*Seg, *e1));
+	float r2 = fabsf(Dot(*Seg, *e2));
+	float r3 = e3 ? (fabsf(Dot(*Seg, *e3))) : 0;
+
+	return r1 + r2 + r3;
+}
+
+/// カプセルの直線と平面の交点を求める関数
+Vector3 MyTools::PointOfIntersection(const Capsule& capsule, const Plane& plane, float& t)
+{
+	t = -(plane.normal.x * capsule.segment.origin.x + plane.normal.y * capsule.segment.origin.y + plane.normal.z * capsule.segment.origin.z) / (plane.normal.x * capsule.segment.diff.x + plane.normal.y * capsule.segment.diff.y + plane.normal.z * capsule.segment.diff.z);
+
+	return Add(capsule.segment.origin, Multiply(t, capsule.segment.diff));
 }
 
 /// 
@@ -465,15 +721,34 @@ Vector3 MyTools::Normalize(const Vector3& v)
 	return Vector3{ x, y, z };
 }
 
+/// 3次元ベクトルを標準化して返す関数
+Vector3 MyTools::Standardization(const Vector3& v)
+{
+	float mean = 0.f;					// 平均
+	float standardDeviation = 1.0f;		// 標準偏差
+
+	float meanValue = (v.x + v.y + v.z) / 3.0f;	// 平均値
+
+	// 答え
+	Vector3 ans;
+
+	// 標準化
+	ans.x = (v.x - meanValue) / standardDeviation * standardDeviation + mean;
+	ans.y = (v.y - meanValue) / standardDeviation * standardDeviation + mean;
+	ans.z = (v.z - meanValue) / standardDeviation * standardDeviation + mean;
+
+	return ans;
+}
+
 /// 線形補間
 Vector3 MyTools::Lerp(const Vector3& vector1, const Vector3& vector2, float t)
-{ 
+{
 	return Add(vector1, Multiply(t, Subtract(vector2, vector1)));
 }
 
 /// 球面線形補間
-Vector3 MyTools::Slerp(const Vector3& vector1, const Vector3& vector2, float t) 
-{ 
+Vector3 MyTools::Slerp(const Vector3& vector1, const Vector3& vector2, float t)
+{
 	// 正規化ベクトルを求める
 	Vector3 start = Normalize(vector1);
 	Vector3 end = Normalize(vector2);
@@ -484,7 +759,7 @@ Vector3 MyTools::Slerp(const Vector3& vector1, const Vector3& vector2, float t)
 	dot = Clamp(dot, dot, 1.0f);
 
 	// s－九コサインでθの角度を求める
-	float theta = std::acosf(dot); 
+	float theta = std::acosf(dot);
 
 	// θの角度からsinθを求める
 	float sinTheta = std::sin(theta);
@@ -505,7 +780,7 @@ Vector3 MyTools::Slerp(const Vector3& vector1, const Vector3& vector2, float t)
 		// 球面線形補間したベクトル(単位ベクトル)
 		normalizeVector = Add(Multiply(sinThetaFrom / sinTheta, start), Multiply(sinThetaTo / sinTheta, end));
 	}
-	
+
 	// ベクトルの長さはstartとendの長さを線形補間
 	float length1 = Length(start);
 	float length2 = Length(end);
@@ -517,26 +792,26 @@ Vector3 MyTools::Slerp(const Vector3& vector1, const Vector3& vector2, float t)
 }
 
 /// CatmullRom補間
-Vector3 MyTools::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t) 
-{ 
+Vector3 MyTools::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, const Vector3& p2, const Vector3& p3, float t)
+{
 	const float s = 0.5f;	// 数式に出てくる 1/2 のこと。
 
 	float t2 = t * t;	// t の2乗
 	float t3 = t2 * t;	// t の3乗
-	
+
 
 	Vector3 e3 = Multiply(-1.f, p0);
 	e3 = Add(e3, Multiply(3.0f, p1));
 	e3 = Subtract(e3, Multiply(3.0f, p2));
 	e3 = Add(e3, p3);
 	/*Subtract(Add(Multiply(-1.f, p0), Multiply(3.f, p1)), Add(Multiply(3.f, p2), p3));*/
-	
+
 	Vector3 e2 = Multiply(2.0f, p0);
 	e2 = Subtract(e2, Multiply(5.0f, p1));
 	e2 = Add(e2, Multiply(4.0f, p2));
 	e2 = Subtract(e2, p3);
 	/*Add(Subtract(Multiply(2.f, p0), Multiply(5.f, p1)), Subtract(Multiply(4.f, p2), p3));*/
-	
+
 	Vector3 e1 = Multiply(-1.0f, p0);
 	e1 = Add(e1, p2);
 	/*Add(Multiply(-1.f, p0), p2);*/
@@ -552,8 +827,8 @@ Vector3 MyTools::CatmullRomInterpolation(const Vector3& p0, const Vector3& p1, c
 }
 
 /// CatmullRomスプライン曲線上の座標を得る
-Vector3 MyTools::CatmullRomPosition(const std::vector<Vector3>& points, float t) 
-{ 
+Vector3 MyTools::CatmullRomPosition(const std::vector<Vector3>& points, float t)
+{
 	assert(points.size() >= 4 && "制御点は4点以上必要です");
 
 	// 区間数は制御点の数-1
@@ -581,7 +856,7 @@ Vector3 MyTools::CatmullRomPosition(const std::vector<Vector3>& points, float t)
 	if (index == 0) {
 		index0 = index1;
 	}
-	
+
 	// 最後の区間のp3はp2を重複使用する
 	if (index3 >= points.size()) {
 		index3 = index2;
@@ -624,14 +899,19 @@ Vector3 MyTools::Perpendicular(const Vector3& vector)
 	return { 0.0f, -vector.z, vector.y };
 }
 
+/// 反射ベクトルを求める関数
+Vector3 MyTools::Reflect(const Vector3& input, const Vector3& normal)
+{
+	Vector3 r;
+	float iDotn = Dot(input, normal);
+
+	r.x = input.x - 2 * iDotn * normal.x;
+	r.y = input.y - 2 * iDotn * normal.y;
+	r.z = input.z - 2 * iDotn * normal.z;
+
+	return r;
+}
+
 /// 
 /// 3次元ベクトル ここまで
 /// 
-
-///
-/// 描画関数 ここから
-/// 
-/// 
-/// 描画関数 ここまで
-/// 
-

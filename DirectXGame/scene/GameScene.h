@@ -15,6 +15,8 @@
 #include "Wall.h"
 #include <memory>
 #include "Script/Player.h"
+#include "collisionManager.h"
+#include "Obstacles.h"
 
 using namespace std;
 
@@ -48,8 +50,12 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-public:
+	void CheckAllCollision();
+
+public://ゲッター
 	SCENE GetNextScene() override { return NextScene; }
+	//インスタンス
+	Wall* GetWall() { return wall_.get(); }
 
 	/// <summary>
 	/// 敵の生成関数
@@ -76,6 +82,9 @@ private: // メンバ変数
 	/// ゲームシーン用
 	/// </summary>
 	
+	//衝突マネージャ―
+	unique_ptr<CollisionManager> collisionManager_ = nullptr;
+	
 	// 自キャラ
 	unique_ptr<Player> player_ = nullptr;
 
@@ -90,6 +99,9 @@ private: // メンバ変数
 	unique_ptr<Model> enemyModel1_;
 	unique_ptr<Model> enemyModel2_;
 	vector<Model*> enemyModels_;
+
+	//障害物（レーザー）
+	unique_ptr<Obstacles> obstacles_ = nullptr;
 
 	// 敵発生コマンド
 	stringstream enemyPopCommands;

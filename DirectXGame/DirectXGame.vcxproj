@@ -116,7 +116,9 @@
     <ClCompile Include="collisionRecord.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="Gradation.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Obstacles.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Matrix4x4Function.cpp" />
     <ClCompile Include="myFunction.cpp" />
@@ -125,6 +127,7 @@
     <ClCompile Include="Script\MyBase.cpp" />
     <ClCompile Include="Script\MyTools.cpp" />
     <ClCompile Include="Script\Player.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Vector3Function.cpp" />
     <ClCompile Include="WorldTrasformEx.cpp" />
@@ -162,6 +165,7 @@
     <ClInclude Include="collisionRecord.h" />
     <ClInclude Include="collisionTypeIdDef.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="Gradation.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="math\Matrix4x4.h" />
     <ClInclude Include="math\Vector2.h" />
@@ -169,12 +173,14 @@
     <ClInclude Include="math\Vector4.h" />
     <ClInclude Include="Matrix4x4Function.h" />
     <ClInclude Include="myFunction.h" />
+    <ClInclude Include="Obstacles.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Script\Matrix.h" />
     <ClInclude Include="Script\MyBase.h" />
     <ClInclude Include="Script\MyTools.h" />
     <ClInclude Include="Script\Player.h" />
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="Vector3Function.h" />
   </ItemGroup>

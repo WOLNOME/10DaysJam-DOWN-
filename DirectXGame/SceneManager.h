@@ -1,7 +1,9 @@
 #pragma once
 #include "Input.h"
 #include "Audio.h"
+#include "DirectXCommon.h"
 #include "BaseScene.h"
+#include "Gradation.h"
 #include <memory>
 
 class SceneManager {
@@ -18,6 +20,7 @@ public:
 
 private:
 	//
+	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
 
@@ -25,5 +28,12 @@ private:
 	std::unique_ptr<BaseScene> m_pScene = nullptr;
 	SCENE CurrentScene_;
 	SCENE NextScene_;
+
+	// シーン遷移
+	std::unique_ptr<Gradation> gradation_ = nullptr;
+	const int kAnimationFrame_ = 80;
+	int AnimationFrame_;
+	bool isInNow_;
+	bool isOutNow_;
 
 };
