@@ -3,6 +3,7 @@
 #include "collider.h"
 #include "list"
 #include "Model.h"
+#include "cassert"
 
 class CollisionManager {
 private:

@@ -4,6 +4,10 @@
 #include "Matrix4x4Function.h"
 #include "Vector3Function.h"
 #include "collisionTypeIdDef.h"
+#include "myFunction.h"
+#include "EnemyBullet.h"
+
+using namespace std;
 
 class Player;
 
@@ -35,6 +39,11 @@ public:
 	void Draw(const ViewProjection& viewProjection) override;
 
 	/// <summary>
+	/// 弾の発射処理
+	/// </summary>
+	void Fire();
+
+	/// <summary>
 	/// 衝突判定
 	/// </summary>
 	void OnCollision([[maybe_unused]] Collider* other) override;
@@ -47,7 +56,7 @@ public:
 	/// <summary>
 	///	敵生成
 	/// </summary>
-	//void CreateEnemy(const int& enemyType, const Vector3& position);
+	// void CreateEnemy(const int& enemyType, const Vector3& position);
 
 	/// <summary>
 	///	Setter
@@ -63,15 +72,25 @@ public:
 
 private:
 	enum EnemyType {
-		kOne,
-		kTwo,
+		kFollow,
+		kFront,
+		kBack,
+		kRight,
+		kLeft,
 	};
 
-	EnemyType enemyType_ = EnemyType::kOne;
+	EnemyType enemyType_;
 
 	Player* player_ = nullptr;
 
+	list<EnemyBullet*> enemyBullets_;
+
 	float speed_ = 0.009f;
+
+	float rand_ = 0.0f;
+	int randIndex_ = 0;
+
+	int randTimer_ = 0;
 
 	bool isDead_ = false;
 };

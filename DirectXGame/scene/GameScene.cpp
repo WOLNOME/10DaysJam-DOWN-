@@ -164,11 +164,11 @@ void GameScene::CheckAllCollision() {
 	// コライダーリストに登録
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(obstacles_.get());
-	if (enemies_.max_size() > 0) {
-		for (auto& enemy : enemies_) {
-			collisionManager_->AddCollider(enemy.get());
-		}
-	}
+	//if (enemies_.max_size() > 0) {
+	//	for (auto& enemy : enemies_) {
+	//		collisionManager_->AddCollider(enemy.get());
+	//	}
+	//}
 
 	// 衝突判定処理
 	collisionManager_->CheckAllCollisions();
