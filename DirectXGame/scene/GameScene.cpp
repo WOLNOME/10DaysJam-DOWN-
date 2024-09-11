@@ -33,13 +33,19 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	gameCamera_ = std::make_unique<GameCamera>();
 	wall_ = std::make_unique<Wall>();
 	player_ = std::make_unique<Player>();
+	obstacles_ = std::make_unique<Obstacles>();
+
+	//他クラスの参照
+	gameCamera_->SetParent(&player_->GetWorldTransform());
+	obstacles_->SetGameScene(this);
+
 
 	// インスタンス初期化
 	gameCamera_->Initialize();
 	wall_->Initialize();
 	player_->Initialize(playerModels_);
+	obstacles_->Initialize();
 	
-	gameCamera_->SetParent(&player_->GetWorldTransform());
 
 	// カーソルを非表示
 	ShowCursor(false);
@@ -58,6 +64,7 @@ void GameScene::Update() {
 
 	//オブジェクトの更新処理
 	wall_->Update();
+	obstacles_->Update();
 
 	// 
 
@@ -69,7 +76,8 @@ void GameScene::Update() {
 
 
 
-
+	//当たり判定
+	//CheckAllCollision();
 
 
 
@@ -112,6 +120,9 @@ void GameScene::Draw() {
 
 	// 自キャラ
 	player_->Draw(viewProjection_);
+	
+	//レーザー
+	obstacles_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
@@ -129,6 +140,16 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollision() {
+	//衝突マネージャーのクリア
+	collisionManager_->Reset();
+	//コライダーリストに登録
+	collisionManager_->AddCollider(player_.get());
+	collisionManager_->AddCollider(obstacles_.get());
+	//衝突判定処理
+	collisionManager_->CheckAllCollisions();
 }
 
 void GameScene::LoadEnemyPopData(const string& fileName) {

@@ -24,7 +24,6 @@ void Wall::Initialize() {
 	worldTransformBlack_.translation_ = {0.0f, -(kWallLength_ - 50), 0.0f};
 	worldTransformPhaseGround_.translation_ = {0.0f, -kWallLength_, 0.0f};
 	// 変数の初期化
-	fallVelocity_ = {0.0f, 8.0f, 0.0f};
 }
 
 void Wall::Update() {

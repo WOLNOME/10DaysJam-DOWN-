@@ -44,15 +44,15 @@ private:
 	//壁の長さ
 	const float kWallLength_ = 3200.0f;
 	//落下速度
-	Vector3 fallVelocity_;
+	Vector3 fallVelocity_ = {0.0f, 8.0f, 0.0f};
 
 private://フェーズ処理変数
 	//各フェーズの時間
-	const int kPhaseTime_ = 60 * 10;
+	const int kPhaseTime_ = 60 * 40;
 	//フェーズタイマー
 	int phaseTimer_ = 0;
 	//プレイヤーの身長(カメラと地面の距離)
-	const float kPlayerHeight_ = 50.0f;
+	const float kPlayerHeight_ = 10.0f;
 	//休憩ゾーンが来るフラグ
 	bool isComingPhaseGround_ = false;
 	//着地したフラグ
