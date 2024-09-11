@@ -46,6 +46,8 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	player_->Initialize(playerModels_);
 	obstacles_->Initialize();
 	
+	gameCamera_->SetParent(&player_->GetWorldTransform());
+	player_->SetWall(wall_.get());
 
 	// カーソルを非表示
 	ShowCursor(false);

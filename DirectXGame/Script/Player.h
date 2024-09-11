@@ -10,6 +10,9 @@
 #include "Matrix.h"
 #include "BaseCharacter.h"
 
+/// Wallの前方宣言
+class Wall;
+
 class Player : public BaseCharacter {
 public:
 
@@ -45,6 +48,12 @@ public:
 	Vector3 GetCenter() const override;
 
 	/// <summary>
+	/// 壁をセット
+	/// </summary>
+	/// <param name="wall"></param>
+	void SetWall(Wall* wall) { wall_ = wall; }
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
@@ -58,16 +67,21 @@ private:
 	// キーボード入力
 	Input* input_ = nullptr;
 
+	// 壁
+	Wall* wall_ = nullptr;
+
 	// 自キャラの速さ
-	float kCharacterSpeed = 0.5f;
+	float kCharacterSpeed_;
 
 	// カーソルの移動量
-	Vector2 mouseMove = {0.0f, 0.0f};
-	Vector2 mousePosPre;
-	const Vector2 mouseCenter = {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2};
-	Vector2 mousePos;
+	Vector2 mouseMove_;
+	Vector2 mousePosPre_;
+	const Vector2 mouseCenter_ = {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2};
+	Vector2 mousePos_;
 
 	bool isDebug_ = false;
 
-
+	// 落下速度
+	Vector3 fallingVelocity_;
+	Vector3 fallingVelocityJet_;
 };
