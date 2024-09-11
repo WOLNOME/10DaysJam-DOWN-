@@ -1,7 +1,8 @@
 #define _USE_MATH_DEFINES
 #include "Player.h"
-#include <cmath>
 #include "ImGuiManager.h"
+#include "Wall.h"
+#include <cmath>
 #include <cassert>
 
 /// 初期化
@@ -24,7 +25,12 @@ void Player::Initialize(const std::vector<Model*> models) {
 	// シングルトンインスタンスを取得する
 	input_ = Input::GetInstance();
 
-	SetCursorPos(int(mouseCenter.x), int(mouseCenter.y));
+	SetCursorPos(int(mouseCenter_.x), int(mouseCenter_.y));
+
+	kCharacterSpeed_ = 0.5f;
+	mouseMove_ = {0.0f, 0.0f};
+	fallingVelocity_ = {0.0f, 8.0f, 0.0f};
+	fallingVelocityJet_ = {0.0f, 3.0f, 0.0f};
 }
 
 /// 更新
@@ -66,11 +72,14 @@ void Player::Update() {
 	// 回転を消す
 	worldTransform_.rotation_.z = 0.0f;
 
-	ImGui::DragFloat2("mouseMove", &mouseMove.x, 0.05f);
-	ImGui::DragFloat2("mousePos", &mousePos.x, 0.05f);
+	ImGui::DragFloat2("mouseMove", &mouseMove_.x, 0.05f);
+	ImGui::DragFloat2("mousePos", &mousePos_.x, 0.05f);
 
 	ImGui::Text("Push P Key : mouseLock switching ");
 	ImGui::Checkbox("Debug", &isDebug_);
+
+	ImGui::DragFloat3("fallVelocity", &fallingVelocity_.x, 0.05f);
+	ImGui::DragFloat3("fallVelocityJet", &fallingVelocityJet_.x, 0.05f);
 
 	ImGui::End();
 
@@ -78,6 +87,15 @@ void Player::Update() {
 
 	// 行列の更新・転送
 	worldTransform_.UpdateMatrix();
+
+	// ジェットパックの処理
+	if (input_->TriggerKey(DIK_SPACE) || input_->PushKey(DIK_SPACE)) {
+		wall_->SetFallVelocity(fallingVelocityJet_);
+	}
+	else
+	{
+		wall_->SetFallVelocity(fallingVelocity_);
+	}
 
 }
 
@@ -89,16 +107,16 @@ void Player::Translation() {
 	// キーボード操作
 	// 押した方向で移動ベクトルを変更(左右)
 	if (input_->PushKey(DIK_A)) {
-		move.x -= kCharacterSpeed;
+		move.x -= kCharacterSpeed_;
 	} else if (input_->PushKey(DIK_D)) {
-		move.x += kCharacterSpeed;
+		move.x += kCharacterSpeed_;
 	}
 
 	// 押した方向で移動ベクトルを変更(上下)
 	if (input_->PushKey(DIK_W)) {
-		move.z += kCharacterSpeed;
+		move.z += kCharacterSpeed_;
 	} else if (input_->PushKey(DIK_S)) {
-		move.z -= kCharacterSpeed;
+		move.z -= kCharacterSpeed_;
 	}
 
 	// 移動ベクトルの向きを自キャラの向きに合わせる
@@ -137,16 +155,16 @@ void Player::MouseMove() {
 	// マウス座標（スクリーン座標）を取得
 	POINT mouse;
 	GetCursorPos(&mouse);
-	mousePos = {float(mouse.x), float(mouse.y)};
+	mousePos_ = {float(mouse.x), float(mouse.y)};
 
-	mouseMove = {0.0f, 0.0f};
-	mouseMove = MyTools::Normalize(float(mousePos.x) - WinApp::kWindowWidth / 2, float(mousePos.y) - WinApp::kWindowHeight / 2)*(3.0f/60.0f);
+	mouseMove_ = {0.0f, 0.0f};
+	mouseMove_ = MyTools::Normalize(float(mousePos_.x) - WinApp::kWindowWidth / 2, float(mousePos_.y) - WinApp::kWindowHeight / 2)*(3.0f/60.0f);
 
 	
-	SetCursorPos(int(mouseCenter.x), int(mouseCenter.y));
+	SetCursorPos(int(mouseCenter_.x), int(mouseCenter_.y));
 
-	worldTransform_.rotation_.x += mouseMove.y;
-	worldTransform_.rotation_.y += mouseMove.x;
+	worldTransform_.rotation_.x += mouseMove_.y;
+	worldTransform_.rotation_.y += mouseMove_.x;
 
 	// 制限
 	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));

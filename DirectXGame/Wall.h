@@ -16,6 +16,7 @@ public:
 public://関数
 public://ゲッター
 public://セッター
+	void SetFallVelocity(const Vector3& velocity) { fallVelocity_ = velocity; }
 
 private://変数
 	//ワールドトランスフォーム
