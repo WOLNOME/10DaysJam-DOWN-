@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Matrix4x4.h"
+#include "Script/Matrix.h"
 #include "Vector3.h"
 #include <d3d12.h>
 #include <type_traits>
@@ -46,12 +47,15 @@ public:
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
-	void UpdateMatrix();
 	/// <summary>
 	/// 定数バッファの取得
 	/// </summary>
 	/// <returns>定数バッファ</returns>
 	const Microsoft::WRL::ComPtr<ID3D12Resource>& GetConstBuffer() const { return constBuffer_; }
+	/// <summary>
+	/// 行列の計算・転送する
+	/// </summary>
+	void UpdateMatrix();
 
 private:
 	// 定数バッファ

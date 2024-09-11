@@ -1,19 +1,94 @@
 #include "GameScene.h"
 #include "TextureManager.h"
+#include "ImGuiManager.h"
 #include <cassert>
 
-GameScene::GameScene() {}
+GameScene::GameScene() {
+	//現在のシーンを設定
+	NextScene = Game;
+}
 
 GameScene::~GameScene() {}
 
-void GameScene::Initialize() {
-
+void GameScene::Initialize(Input* input, Audio* audio) {
 	dxCommon_ = DirectXCommon::GetInstance();
-	input_ = Input::GetInstance();
-	audio_ = Audio::GetInstance();
+	input_ = input;
+	audio_ = audio;
+
+	// ビュープロジェクションの初期化
+	viewProjection_.farZ = 2000.0f;
+	viewProjection_.Initialize();
+
+	// スプライトテクスチャ
+
+	// スプライトの生成
+	
+	// モデルテクスチャ
+
+	// モデルの生成
+	playerModel_.reset(Model::CreateFromOBJ("player"));
+	playerModels_.push_back(playerModel_.get());
+
+	// インスタンスの生成
+	gameCamera_ = std::make_unique<GameCamera>();
+	wall_ = std::make_unique<Wall>();
+	player_ = std::make_unique<Player>();
+	obstacles_ = std::make_unique<Obstacles>();
+
+	//他クラスの参照
+	gameCamera_->SetParent(&player_->GetWorldTransform());
+	obstacles_->SetGameScene(this);
+
+
+	// インスタンス初期化
+	gameCamera_->Initialize();
+	wall_->Initialize();
+	player_->Initialize(playerModels_);
+	obstacles_->Initialize();
+	
+	gameCamera_->SetParent(&player_->GetWorldTransform());
+	player_->SetWall(wall_.get());
+
+	// カーソルを非表示
+	ShowCursor(false);
 }
 
-void GameScene::Update() {}
+void GameScene::Update() {
+	// プレイヤーの更新処理
+	player_->Update();
+
+	// カメラの更新処理
+	gameCamera_->Update();
+	viewProjection_.matView = gameCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = gameCamera_->GetViewProjection().matProjection;
+	// ビュープロジェクション行列の更新と転送
+	viewProjection_.TransferMatrix();
+
+	//オブジェクトの更新処理
+	wall_->Update();
+	obstacles_->Update();
+
+	// 
+
+
+
+
+
+
+
+
+
+	//当たり判定
+	//CheckAllCollision();
+
+
+
+#ifdef _DEBUG
+	ImGui::Begin("GameSceneNow");
+
+	ImGui::End();
+#endif // _DEBUG
+}
 
 void GameScene::Draw() {
 
@@ -42,6 +117,15 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	//モデル
+	wall_->Draw(viewProjection_);
+
+	// 自キャラ
+	player_->Draw(viewProjection_);
+	
+	//レーザー
+	obstacles_->Draw(viewProjection_);
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -58,6 +142,16 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
+}
+
+void GameScene::CheckAllCollision() {
+	//衝突マネージャーのクリア
+	collisionManager_->Reset();
+	//コライダーリストに登録
+	collisionManager_->AddCollider(player_.get());
+	collisionManager_->AddCollider(obstacles_.get());
+	//衝突判定処理
+	collisionManager_->CheckAllCollisions();
 }
 
 void GameScene::LoadEnemyPopData(const string& fileName) {
