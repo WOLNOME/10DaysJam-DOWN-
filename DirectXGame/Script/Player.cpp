@@ -34,7 +34,7 @@ void Player::Initialize(const std::vector<Model*> models) {
 }
 
 /// 更新
-void Player::Update() {
+void Player::Update(ViewProjection& viewProjection) {
 	if (!isDebug_) {
 		// マウスによる視点移動
 		MouseMove();
@@ -87,6 +87,9 @@ void Player::Update() {
 
 	// 行列の更新・転送
 	worldTransform_.UpdateMatrix();
+
+	WorldTo3DReticle();
+	Reticle3Dto2D(viewProjection);
 
 	// ジェットパックの処理
 	if (input_->TriggerKey(DIK_SPACE) || input_->PushKey(DIK_SPACE)) {
@@ -170,6 +173,38 @@ void Player::MouseMove() {
 	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
 }
 
+/// ワールド座標から3Dレティクルの座標を計算
+void Player::WorldTo3DReticle() {
+	// 自機から3Dレティクルの距離
+	const float kDistancePlayerTo3DReticle = 50.0f;
+	// 自機から3Dレティクルへのオフセット(Z+向き)
+	Vector3 offset = {0, 0, 1.0f};
+	// 自機のワールド行列の回転を反映
+	offset = Matrix::TransformNormal(offset, worldTransform_.matWorld_);
+	// ベクトルの長さを整える
+	offset = MyTools::Multiply(kDistancePlayerTo3DReticle, MyTools::Normalize(offset));
+	// 3Dレティクルの座標を設定
+	worldTransform3DReticle_.translation_ = MyTools::Add(GetCenter(), offset);
+	worldTransform3DReticle_.UpdateMatrix();
+}
+
+/// 3Dレティクルの座標から2Dレティクルの座標を計算
+void Player::Reticle3Dto2D(ViewProjection& viewProjection) {
+	Vector3 positionReticle = Get3DReticleWorldPosition();
+
+	// ビューポート行列
+	Matrix4x4 matViewport = Matrix::MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
+
+	// ビュー行列とプロジェクション行列、ビューポート行列を合成する
+	Matrix4x4 matViewProjectionViewport = Matrix::Multiply(Matrix::Multiply(viewProjection.matView, viewProjection.matProjection), matViewport);
+
+	// ワールド→スクリーン座標変換(ここで3Dから2Dになる)
+	positionReticle = Matrix::Transform(positionReticle, matViewProjectionViewport);
+
+	// スプライトのレティクルに座標設定
+	sprite2DReticle_->SetPosition(Vector2(positionReticle.x, positionReticle.y));
+}
+
 Vector3 Player::GetCenter() const {
 	Vector3 worldPos;
 
@@ -180,7 +215,25 @@ Vector3 Player::GetCenter() const {
 	return worldPos;
 }
 
+/// 3Dレティクルのワールド座標を取得
+Vector3 Player::Get3DReticleWorldPosition() {
+	// ワールド座標を入れる変数
+	Vector3 worldPos;
+
+	// ワールド行列の平行移動成分を取得(ワールド座標)
+	worldPos.x = worldTransform3DReticle_.matWorld_.m[3][0];
+	worldPos.y = worldTransform3DReticle_.matWorld_.m[3][1];
+	worldPos.z = worldTransform3DReticle_.matWorld_.m[3][2];
+
+	return worldPos;
+}
+
 /// 描画
 void Player::Draw(ViewProjection& viewProjection) { 
 	BaseCharacter::Draw(viewProjection); 
+}
+
+void Player::DrawUI() {
+	// 2Dレティクルを描画
+	sprite2DReticle_->Draw();
 }
