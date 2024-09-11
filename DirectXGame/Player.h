@@ -9,6 +9,7 @@
 #include "MyTools.h"
 #include "Matrix.h"
 #include "BaseCharacter.h"
+#include "collisionTypeIdDef.h"
 
 /// Wallの前方宣言
 class Wall;

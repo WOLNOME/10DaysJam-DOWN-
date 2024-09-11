@@ -1,10 +1,10 @@
 #include "GameScene.h"
-#include "TextureManager.h"
 #include "ImGuiManager.h"
+#include "TextureManager.h"
 #include <cassert>
 
 GameScene::GameScene() {
-	//現在のシーンを設定
+	// 現在のシーンを設定
 	NextScene = Game;
 }
 
@@ -22,12 +22,14 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	// スプライトテクスチャ
 
 	// スプライトの生成
-	
+
 	// モデルテクスチャ
 
 	// モデルの生成
 	playerModel_.reset(Model::CreateFromOBJ("player"));
 	playerModels_.push_back(playerModel_.get());
+	enemyModel1_.reset(Model::CreateFromOBJ("boss_block"));
+	enemyModels_.push_back(enemyModel1_.get());
 
 	// インスタンスの生成
 	gameCamera_ = std::make_unique<GameCamera>();
@@ -35,25 +37,36 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	player_ = std::make_unique<Player>();
 	obstacles_ = std::make_unique<Obstacles>();
 
-	//他クラスの参照
+	// 他クラスの参照
 	gameCamera_->SetParent(&player_->GetWorldTransform());
 	obstacles_->SetGameScene(this);
-
 
 	// インスタンス初期化
 	gameCamera_->Initialize();
 	wall_->Initialize();
 	player_->Initialize(playerModels_);
 	obstacles_->Initialize();
-	
+
 	gameCamera_->SetParent(&player_->GetWorldTransform());
 	player_->SetWall(wall_.get());
+
+	// enemyPopData読み込み
+	LoadEnemyPopData("./csv/enemyPop.csv");
 
 	// カーソルを非表示
 	ShowCursor(false);
 }
 
 void GameScene::Update() {
+	// 死亡した敵の削除
+	enemies_.remove_if([](const unique_ptr<Enemy>& enemy) {
+		if (enemy->IsDead()) {
+			delete enemy.get();
+			return true;
+		}
+		return false;
+	});
+
 	// プレイヤーの更新処理
 	player_->Update();
 
@@ -64,24 +77,20 @@ void GameScene::Update() {
 	// ビュープロジェクション行列の更新と転送
 	viewProjection_.TransferMatrix();
 
-	//オブジェクトの更新処理
+	// オブジェクトの更新処理
 	wall_->Update();
 	obstacles_->Update();
 
-	// 
+	// 敵の生成処理
+	UpdateEnemyPopCommands();
 
+	// 敵の更新処理
+	for (auto& enemy : enemies_) {
+		enemy->Update();
+	}
 
-
-
-
-
-
-
-
-	//当たり判定
+	// 当たり判定
 	//CheckAllCollision();
-
-
 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneNow");
@@ -117,13 +126,18 @@ void GameScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
-	//モデル
+	// モデル
 	wall_->Draw(viewProjection_);
 
 	// 自キャラ
 	player_->Draw(viewProjection_);
-	
-	//レーザー
+
+	// 敵
+	for (auto& enemy : enemies_) {
+		enemy->Draw(viewProjection_);
+	}
+
+	// レーザー
 	obstacles_->Draw(viewProjection_);
 
 	// 3Dオブジェクト描画後処理
@@ -145,12 +159,18 @@ void GameScene::Draw() {
 }
 
 void GameScene::CheckAllCollision() {
-	//衝突マネージャーのクリア
+	// 衝突マネージャーのクリア
 	collisionManager_->Reset();
-	//コライダーリストに登録
+	// コライダーリストに登録
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(obstacles_.get());
-	//衝突判定処理
+	if (enemies_.max_size() > 0) {
+		for (auto& enemy : enemies_) {
+			collisionManager_->AddCollider(enemy.get());
+		}
+	}
+
+	// 衝突判定処理
 	collisionManager_->CheckAllCollisions();
 }
 
@@ -159,9 +179,9 @@ void GameScene::LoadEnemyPopData(const string& fileName) {
 	file.open(fileName);
 	assert(file.is_open());
 
-	enemyPopCommands.clear();
+	enemyPopCommands_.clear();
 
-	enemyPopCommands << file.rdbuf();
+	enemyPopCommands_ << file.rdbuf();
 
 	file.close();
 }
@@ -179,7 +199,7 @@ void GameScene::UpdateEnemyPopCommands() {
 
 	std::string command;
 
-	while (getline(enemyPopCommands, command)) {
+	while (getline(enemyPopCommands_, command)) {
 		std::istringstream line_stream(command);
 
 		std::string word;
@@ -223,6 +243,8 @@ void GameScene::CreateEnemy(const int& enemyType, const Vector3& position) {
 	unique_ptr<Enemy> enemy = make_unique<Enemy>();
 
 	enemy->Initialize(enemyModels_, enemyType, position);
+
+	enemy->SetPlayer(player_.get());
 
 	enemies_.push_back(move(enemy));
 }

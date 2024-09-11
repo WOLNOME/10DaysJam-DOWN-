@@ -5,6 +5,8 @@
 #include "Vector3Function.h"
 #include "collisionTypeIdDef.h"
 
+class Player;
+
 class Enemy : public BaseCharacter {
 public:
 	/// <summary>
@@ -45,18 +47,19 @@ public:
 	/// <summary>
 	///	敵生成
 	/// </summary>
-	void CreateEnemy(const int& enemyType, const Vector3& position);
+	//void CreateEnemy(const int& enemyType, const Vector3& position);
 
 	/// <summary>
 	///	Setter
 	/// </summary>
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 	void SetType(const int& type) { enemyType_ = static_cast<EnemyType>(type); }
+	void SetPlayer(Player* player) { player_ = player; }
 
 	/// <summary>
 	///	Getter
 	/// </summary>
-	bool GetIsDead() const { return isDead_; }
+	bool IsDead() const { return isDead_; }
 
 private:
 	enum EnemyType {
@@ -64,7 +67,11 @@ private:
 		kTwo,
 	};
 
-	EnemyType enemyType_;
+	EnemyType enemyType_ = EnemyType::kOne;
+
+	Player* player_ = nullptr;
+
+	float speed_ = 0.009f;
 
 	bool isDead_ = false;
 };

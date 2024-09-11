@@ -14,7 +14,7 @@
 #include "GameCamera.h"
 #include "Wall.h"
 #include <memory>
-#include "Script/Player.h"
+#include "Player.h"
 #include "collisionManager.h"
 #include "Obstacles.h"
 
@@ -104,7 +104,7 @@ private: // メンバ変数
 	unique_ptr<Obstacles> obstacles_ = nullptr;
 
 	// 敵発生コマンド
-	stringstream enemyPopCommands;
+	stringstream enemyPopCommands_;
 
 	// 敵発生待機時間
 	bool isWaiting_ = false;

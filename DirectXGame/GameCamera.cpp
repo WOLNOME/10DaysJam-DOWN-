@@ -1,5 +1,5 @@
 #include "GameCamera.h"
-#include "Script/Matrix.h"
+#include "Matrix.h"
 
 GameCamera::GameCamera() {}
 

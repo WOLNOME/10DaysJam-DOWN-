@@ -1,5 +1,5 @@
 #include "Wall.h"
-#include "Script/MyTools.h"
+#include "MyTools.h"
 
 Wall::Wall() {}
 
