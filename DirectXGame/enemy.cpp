@@ -1,8 +1,8 @@
 #include "enemy.h"
+#include "EnemyBullet.h"
+#include "GameScene.h"
 #include "ImGuiManager.h"
 #include "Script/Player.h"
-#include "GameScene.h"
-#include "EnemyBullet.h"
 
 Enemy::Enemy() {}
 
@@ -27,7 +27,7 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 	} else if (enemyType_ == EnemyType::kFront) {
 		speed_ = 0.15f;
-		Vector3 offset = {0.0f, 0.0f, -47.0f};
+		Vector3 offset = {0.0f, -150.0f, -47.0f};
 		worldTransform_.translation_ = offset;
 
 		Vector3 scale = {2.0f, 2.0f, 2.0f};
@@ -37,7 +37,7 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 	} else if (enemyType_ == EnemyType::kBack) {
 		speed_ = 0.15f;
-		Vector3 offset = {0.0f, 0.0f, 47.0f};
+		Vector3 offset = {0.0f, -150.0f, 47.0f};
 		worldTransform_.translation_ = offset;
 
 		Vector3 scale = {2.0f, 2.0f, 2.0f};
@@ -47,7 +47,7 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 	} else if (enemyType_ == EnemyType::kRight) {
 		speed_ = 0.15f;
-		Vector3 offset = {47.0f, 0.0f, 0.0f};
+		Vector3 offset = {47.0f, -150.0f, 0.0f};
 		worldTransform_.translation_ = offset;
 
 		Vector3 scale = {2.0f, 2.0f, 2.0f};
@@ -57,7 +57,7 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 	} else if (enemyType_ == EnemyType::kLeft) {
 		speed_ = 0.15f;
-		Vector3 offset = {-47.0f, 0.0f, 0.0f};
+		Vector3 offset = {-47.0f, -150.0f, 0.0f};
 		worldTransform_.translation_ = offset;
 
 		Vector3 scale = {2.0f, 2.0f, 2.0f};
@@ -72,14 +72,21 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 void Enemy::Update() {
 
 	if (enemyType_ == EnemyType::kFollow) {
+		float followSpeed = 0.03f;
+
 		velocity_ = GetCenter() - player_->GetCenter();
 
 		velocity_.Normalize();
 
-		worldTransform_.translation_ -= velocity_ * speed_;
+		worldTransform_.translation_ -= velocity_ * followSpeed;
 	}
 
 	if (enemyType_ == EnemyType::kFront) {
+		if (worldTransform_.translation_.y < -25.0f) {
+			worldTransform_.translation_.y += 0.5f;
+		}
+
+
 		if (randTimer_ > 0) {
 			randTimer_--;
 
@@ -112,6 +119,11 @@ void Enemy::Update() {
 	}
 
 	if (enemyType_ == EnemyType::kBack) {
+		if (worldTransform_.translation_.y < -25.0f) {
+			worldTransform_.translation_.y += 0.5f;
+		}
+
+
 		if (randTimer_ > 0) {
 			randTimer_--;
 
@@ -144,6 +156,11 @@ void Enemy::Update() {
 	}
 
 	if (enemyType_ == EnemyType::kRight) {
+		if (worldTransform_.translation_.y < -25.0f) {
+			worldTransform_.translation_.y += 0.5f;
+		}
+
+
 		if (randTimer_ > 0) {
 			randTimer_--;
 
@@ -176,6 +193,11 @@ void Enemy::Update() {
 	}
 
 	if (enemyType_ == EnemyType::kLeft) {
+		if (worldTransform_.translation_.y < -25.0f) {
+			worldTransform_.translation_.y += 0.5f;
+		}
+
+
 		if (randTimer_ > 0) {
 			randTimer_--;
 
@@ -208,7 +230,7 @@ void Enemy::Update() {
 	}
 
 	// 弾の更新
-	//for (auto& bullet : bullets_) {
+	// for (auto& bullet : bullets_) {
 	//	bullet->Update();
 	//}
 
@@ -227,9 +249,9 @@ void Enemy::Update() {
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	models_[0]->Draw(worldTransform_, viewProjection);
 
-	//for (auto& bullet : bullets_) {
+	// for (auto& bullet : bullets_) {
 	//	bullet->Draw(viewProjection);
-	//}
+	// }
 }
 
 void Enemy::Fire() {

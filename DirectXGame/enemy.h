@@ -90,7 +90,7 @@ private:
 
 	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
 
-	float speed_ = 0.009f;
+	float speed_ = 0.055f;
 
 	float rand_ = 0.0f;
 	int randIndex_ = 0;
