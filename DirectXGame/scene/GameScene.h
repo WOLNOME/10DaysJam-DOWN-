@@ -50,7 +50,6 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	void CheckAllCollision();
 
 public://ゲッター
 	SCENE GetNextScene() override { return NextScene; }

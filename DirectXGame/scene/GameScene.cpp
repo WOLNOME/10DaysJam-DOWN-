@@ -73,12 +73,10 @@ void GameScene::Update() {
 
 
 
-
-
-
-	//当たり判定
-	//CheckAllCollision();
-
+	//休憩ポイントに着地したら休憩シーンへ
+	if (wall_->GetIsLanding() && NextScene == Game) {
+		NextScene = Rest;
+	}
 
 
 #ifdef _DEBUG
@@ -140,16 +138,6 @@ void GameScene::Draw() {
 	Sprite::PostDraw();
 
 #pragma endregion
-}
-
-void GameScene::CheckAllCollision() {
-	//衝突マネージャーのクリア
-	collisionManager_->Reset();
-	//コライダーリストに登録
-	collisionManager_->AddCollider(player_.get());
-	collisionManager_->AddCollider(obstacles_.get());
-	//衝突判定処理
-	collisionManager_->CheckAllCollisions();
 }
 
 void GameScene::LoadEnemyPopData(const string& fileName) {

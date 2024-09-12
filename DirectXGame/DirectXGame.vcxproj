@@ -119,6 +119,9 @@
     <ClCompile Include="Gradation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Obstacles.cpp" />
+    <ClCompile Include="RestCamera.cpp" />
+    <ClCompile Include="RestPlayer.cpp" />
+    <ClCompile Include="RestScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Matrix4x4Function.cpp" />
     <ClCompile Include="myFunction.cpp" />
@@ -176,6 +179,9 @@
     <ClInclude Include="Matrix4x4Function.h" />
     <ClInclude Include="myFunction.h" />
     <ClInclude Include="Obstacles.h" />
+    <ClInclude Include="RestCamera.h" />
+    <ClInclude Include="RestPlayer.h" />
+    <ClInclude Include="RestScene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Script\Matrix.h" />

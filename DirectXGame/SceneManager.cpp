@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "RestScene.h"
 
 SceneManager::SceneManager() {}
 
@@ -90,6 +91,12 @@ void SceneManager::ChangeScene() {
 			m_pScene->Initialize(input_, audio_);
 			CurrentScene_ = m_pScene->GetNextScene();
 			;
+			break;
+		case SCENE::Rest:
+			m_pScene = std::make_unique<RestScene>(); // レストシーンを現在のシーンにする
+			m_pScene->Initialize(input_, audio_);
+			CurrentScene_ = m_pScene->GetNextScene();
+
 			break;
 		default:
 			break;
