@@ -13,7 +13,7 @@ class player;
 
 class EnemyBullet : public Collider {
 public:
-	const int32_t kLifeTime = 60 * 5;
+	const int32_t kLifeTime = 60 * 3;
 
 	EnemyBullet();
 	~EnemyBullet();

@@ -1,6 +1,8 @@
 #include "enemy.h"
 #include "ImGuiManager.h"
 #include "Script/Player.h"
+#include "GameScene.h"
+#include "EnemyBullet.h"
 
 Enemy::Enemy() {}
 
@@ -68,14 +70,6 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 }
 
 void Enemy::Update() {
-	// 死亡した弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) {
-		if (bullet->IsDead()) {
-			delete bullet;
-			return true;
-		}
-		return false;
-	});
 
 	if (enemyType_ == EnemyType::kFollow) {
 		velocity_ = GetCenter() - player_->GetCenter();
@@ -214,9 +208,9 @@ void Enemy::Update() {
 	}
 
 	// 弾の更新
-	for (auto& bullet : enemyBullets_) {
-		bullet->Update();
-	}
+	//for (auto& bullet : bullets_) {
+	//	bullet->Update();
+	//}
 
 	worldTransform_.UpdateMatrix();
 
@@ -233,9 +227,9 @@ void Enemy::Update() {
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	models_[0]->Draw(worldTransform_, viewProjection);
 
-	for (auto& bullet : enemyBullets_) {
-		bullet->Draw(viewProjection);
-	}
+	//for (auto& bullet : bullets_) {
+	//	bullet->Draw(viewProjection);
+	//}
 }
 
 void Enemy::Fire() {
@@ -245,10 +239,7 @@ void Enemy::Fire() {
 
 	bulletVelocity.Normalize();
 
-	EnemyBullet* bullet = new EnemyBullet();
-	bullet->Initialize(models_[0], bulletPos, bulletVelocity * speed);
-
-	enemyBullets_.push_back(bullet);
+	gameScene_->CreateEnemyBullet(models_[0], bulletPos, bulletVelocity * speed);
 }
 
 void Enemy::OnCollision([[maybe_unused]] Collider* other) {

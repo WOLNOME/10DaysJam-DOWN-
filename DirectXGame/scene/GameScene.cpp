@@ -36,6 +36,7 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	wall_ = std::make_unique<Wall>();
 	player_ = std::make_unique<Player>();
 	obstacles_ = std::make_unique<Obstacles>();
+	collisionManager_ = std::make_unique<CollisionManager>();
 
 	// 他クラスの参照
 	gameCamera_->SetParent(&player_->GetWorldTransform());
@@ -59,9 +60,18 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 
 void GameScene::Update() {
 	// 死亡した敵の削除
-	enemies_.remove_if([](const unique_ptr<Enemy>& enemy) {
+	enemies_.remove_if([](unique_ptr<Enemy>& enemy) {
 		if (enemy->IsDead()) {
-			delete enemy.get();
+			enemy.reset();
+			return true;
+		}
+		return false;
+	});
+
+	// 死亡した敵の弾の削除
+	enemyBullets_.remove_if([](unique_ptr<EnemyBullet>& enemyBullet) {
+		if (enemyBullet->IsDead()) {
+			enemyBullet.reset();
 			return true;
 		}
 		return false;
@@ -89,8 +99,13 @@ void GameScene::Update() {
 		enemy->Update();
 	}
 
+	// 敵の弾の更新処理
+	for (auto& enemyBullet : enemyBullets_) {
+		enemyBullet->Update();
+	}
+
 	// 当たり判定
-	//CheckAllCollision();
+	CheckAllCollision();
 
 #ifdef _DEBUG
 	ImGui::Begin("GameSceneNow");
@@ -137,6 +152,11 @@ void GameScene::Draw() {
 		enemy->Draw(viewProjection_);
 	}
 
+	// 敵の弾
+	for (auto& enemyBullet : enemyBullets_) {
+		enemyBullet->Draw(viewProjection_);
+	}
+
 	// レーザー
 	obstacles_->Draw(viewProjection_);
 
@@ -164,11 +184,17 @@ void GameScene::CheckAllCollision() {
 	// コライダーリストに登録
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(obstacles_.get());
-	//if (enemies_.max_size() > 0) {
-	//	for (auto& enemy : enemies_) {
-	//		collisionManager_->AddCollider(enemy.get());
-	//	}
-	//}
+	if (enemies_.max_size() > 0) {
+		for (auto& enemy : enemies_) {
+			collisionManager_->AddCollider(enemy.get());
+		}
+	}
+
+	if (enemyBullets_.max_size() > 0) {
+		for (auto& enemyBullet : enemyBullets_) {
+			collisionManager_->AddCollider(enemyBullet.get());
+		}
+	}
 
 	// 衝突判定処理
 	collisionManager_->CheckAllCollisions();
@@ -246,5 +272,15 @@ void GameScene::CreateEnemy(const int& enemyType, const Vector3& position) {
 
 	enemy->SetPlayer(player_.get());
 
+	enemy->SetGameScene(this);
+
 	enemies_.push_back(move(enemy));
+}
+
+void GameScene::CreateEnemyBullet(Model* model, const Vector3& pos, const Vector3& velocity) {
+	unique_ptr<EnemyBullet> bullet = make_unique<EnemyBullet>();
+
+	bullet->Initialize(model, pos, velocity);
+
+	enemyBullets_.push_back(move(bullet));
 }

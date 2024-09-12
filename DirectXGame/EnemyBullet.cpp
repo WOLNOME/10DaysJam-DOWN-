@@ -19,7 +19,7 @@ void EnemyBullet::Initialize(Model* model, const Vector3& pos, const Vector3& ve
 
 	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeId::kEnemyBullet));
 
-	Collider::SetRadius(0.5f);
+	Collider::SetRadius(1.0f);
 }
 
 void EnemyBullet::Update() {

@@ -17,6 +17,7 @@
 #include "Script/Player.h"
 #include "collisionManager.h"
 #include "Obstacles.h"
+#include "EnemyBullet.h"
 
 using namespace std;
 
@@ -52,17 +53,20 @@ public: // メンバ関数
 
 	void CheckAllCollision();
 
-public://ゲッター
-	SCENE GetNextScene() override { return NextScene; }
-	//インスタンス
-	Wall* GetWall() { return wall_.get(); }
-
 	/// <summary>
 	/// 敵の生成関数
 	/// </summary>
 	void CreateEnemy(const int& enemyType, const Vector3& position);
+	void CreateEnemyBullet(Model* model, const Vector3& pos, const Vector3& velocity);
 	void LoadEnemyPopData(const string& fileName);
 	void UpdateEnemyPopCommands();
+
+public://ゲッター
+	SCENE GetNextScene() override { return NextScene; }
+	//インスタンス
+	Wall* GetWall() { return wall_.get(); }
+	// 敵の弾
+	list<unique_ptr<EnemyBullet>>& GetEnemyBullets() { return enemyBullets_; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -94,6 +98,8 @@ private: // メンバ変数
 
 	// 敵リスト
 	list<unique_ptr<Enemy>> enemies_;
+	// 敵弾のリスト
+	list<unique_ptr<EnemyBullet>> enemyBullets_;
 
 	// 敵モデル
 	unique_ptr<Model> enemyModel1_;

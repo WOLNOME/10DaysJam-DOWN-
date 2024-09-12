@@ -5,11 +5,13 @@
 #include "Vector3Function.h"
 #include "collisionTypeIdDef.h"
 #include "myFunction.h"
-#include "EnemyBullet.h"
+
 
 using namespace std;
 
 class Player;
+
+class GameScene;
 
 class Enemy : public BaseCharacter {
 public:
@@ -64,6 +66,7 @@ public:
 	void SetIsDead(const bool& isDead) { isDead_ = isDead; }
 	void SetType(const int& type) { enemyType_ = static_cast<EnemyType>(type); }
 	void SetPlayer(Player* player) { player_ = player; }
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	/// <summary>
 	///	Getter
@@ -83,7 +86,7 @@ private:
 
 	Player* player_ = nullptr;
 
-	list<EnemyBullet*> enemyBullets_;
+	GameScene* gameScene_ = nullptr;
 
 	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
 
