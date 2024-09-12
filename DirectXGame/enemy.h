@@ -85,6 +85,8 @@ private:
 
 	list<EnemyBullet*> enemyBullets_;
 
+	Vector3 velocity_ = {0.0f, 0.0f, 0.0f};
+
 	float speed_ = 0.009f;
 
 	float rand_ = 0.0f;

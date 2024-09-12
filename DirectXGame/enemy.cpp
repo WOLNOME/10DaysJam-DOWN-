@@ -13,12 +13,14 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 	worldTransform_.translation_ = position;
 
-	worldTransform_.UpdateMatrix();
-
 	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeId::kEnemy));
 
 	if (enemyType_ == EnemyType::kFollow) {
 		speed_ = 0.01f;
+
+		Vector3 scale = {1.0f, 1.0f, 1.0f};
+		worldTransform_.scale_ = scale;
+
 		Collider::SetRadius(1.0f);
 
 	} else if (enemyType_ == EnemyType::kFront) {
@@ -61,24 +63,26 @@ void Enemy::Initialize(const std::vector<Model*> models, const int& enemyType, c
 
 		Collider::SetRadius(2.0f);
 	}
+
+	worldTransform_.UpdateMatrix();
 }
 
 void Enemy::Update() {
 	// 死亡した弾を削除
-	enemyBullets_.remove_if([](EnemyBullet* bullet) { 
+	enemyBullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->IsDead()) {
 			delete bullet;
 			return true;
 		}
 		return false;
-		});
+	});
 
 	if (enemyType_ == EnemyType::kFollow) {
-		Vector3 EnemyToPlayer = GetCenter() - player_->GetCenter();
+		velocity_ = GetCenter() - player_->GetCenter();
 
-		EnemyToPlayer.Normalize();
+		velocity_.Normalize();
 
-		worldTransform_.translation_ -= EnemyToPlayer * speed_;
+		worldTransform_.translation_ -= velocity_ * speed_;
 	}
 
 	if (enemyType_ == EnemyType::kFront) {
@@ -87,13 +91,15 @@ void Enemy::Update() {
 
 			if (randIndex_ == 0) {
 				if (worldTransform_.translation_.x < 48.0f) {
-					worldTransform_.translation_.x += speed_;
+					velocity_ = {1.0f, 0.0f, 0.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 1;
 				}
 			} else {
 				if (worldTransform_.translation_.x > -48.0f) {
-					worldTransform_.translation_.x -= speed_;
+					velocity_ = {-1.0f, 0.0f, 0.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 0;
 				}
@@ -117,13 +123,15 @@ void Enemy::Update() {
 
 			if (randIndex_ == 0) {
 				if (worldTransform_.translation_.x < 48.0f) {
-					worldTransform_.translation_.x += speed_;
+					velocity_ = {1.0f, 0.0f, 0.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 1;
 				}
 			} else {
 				if (worldTransform_.translation_.x > -48.0f) {
-					worldTransform_.translation_.x -= speed_;
+					velocity_ = {-1.0f, 0.0f, 0.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 0;
 				}
@@ -147,13 +155,15 @@ void Enemy::Update() {
 
 			if (randIndex_ == 0) {
 				if (worldTransform_.translation_.z < 48.0f) {
-					worldTransform_.translation_.z += speed_;
+					velocity_ = {0.0f, 0.0f, 1.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 1;
 				}
 			} else {
 				if (worldTransform_.translation_.z > -48.0f) {
-					worldTransform_.translation_.z -= speed_;
+					velocity_ = {0.0f, 0.0f, -1.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 0;
 				}
@@ -177,13 +187,15 @@ void Enemy::Update() {
 
 			if (randIndex_ == 0) {
 				if (worldTransform_.translation_.z < 48.0f) {
-					worldTransform_.translation_.z += speed_;
+					velocity_ = {0.0f, 0.0f, 1.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 1;
 				}
 			} else {
 				if (worldTransform_.translation_.z > -48.0f) {
-					worldTransform_.translation_.z -= speed_;
+					velocity_ = {0.0f, 0.0f, -1.0f};
+					worldTransform_.translation_ += velocity_ * speed_;
 				} else {
 					randIndex_ = 0;
 				}
@@ -218,7 +230,7 @@ void Enemy::Update() {
 #endif _DEBUG
 }
 
-void Enemy::Draw(const ViewProjection& viewProjection) { 
+void Enemy::Draw(const ViewProjection& viewProjection) {
 	models_[0]->Draw(worldTransform_, viewProjection);
 
 	for (auto& bullet : enemyBullets_) {
@@ -247,6 +259,39 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other) {
 	if (typeID == static_cast<uint32_t>(CollisionTypeId::kPlayer)) {
 		if (enemyType_ == EnemyType::kFollow) {
 			isDead_ = true;
+		}
+	}
+
+	// 衝突相手が敵の場合
+	if (typeID == static_cast<uint32_t>(CollisionTypeId::kEnemy)) {
+		Enemy* enemy = static_cast<Enemy*>(other);
+
+		if (enemyType_ == EnemyType::kFollow) {
+			velocity_ = (GetCenter() - enemy->GetCenter()).Normalize();
+		}
+
+		if (enemyType_ == EnemyType::kFront) {
+			if (randIndex_ == 0) {
+				randIndex_ = 1;
+			}
+		}
+
+		if (enemyType_ == EnemyType::kBack) {
+			if (randIndex_ == 0) {
+				randIndex_ = 1;
+			}
+		}
+
+		if (enemyType_ == EnemyType::kRight) {
+			if (randIndex_ == 0) {
+				randIndex_ = 1;
+			}
+		}
+
+		if (enemyType_ == EnemyType::kLeft) {
+			if (randIndex_ == 0) {
+				randIndex_ = 1;
+			}
 		}
 	}
 }
