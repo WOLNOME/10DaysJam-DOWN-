@@ -14,7 +14,7 @@
 #include "GameCamera.h"
 #include "Wall.h"
 #include <memory>
-#include "Player.h"
+#include "Script/Player.h"
 #include "collisionManager.h"
 #include "Obstacles.h"
 
