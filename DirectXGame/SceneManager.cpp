@@ -13,14 +13,11 @@ void SceneManager::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	//シーンの生成
-	//m_pScene = std::make_unique<TitleScene>();
-	m_pScene = std::make_unique<ClearScene>();
+	m_pScene = std::make_unique<TitleScene>();
 	//シーンの初期化
 	m_pScene->Initialize(input_, audio_);
-	//CurrentScene_ = Title;
-	CurrentScene_ = Clear;
-	//NextScene_ = Title;
-	NextScene_ = Clear;
+	CurrentScene_ = Title;
+	NextScene_ = Title;
 	// シーン遷移生成
 	gradation_ = std::make_unique<Gradation>();
 	AnimationFrame_ = 0;
