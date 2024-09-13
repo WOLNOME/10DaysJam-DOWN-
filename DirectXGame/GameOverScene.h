@@ -1,31 +1,27 @@
 #pragma once
-#include "Audio.h"
 #include "BaseScene.h"
+#include "Audio.h"
+#include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "Input.h"
 #include "ViewProjection.h"
-#include "TitleCamera.h"
-#include "TitlePlayer.h"
-#include <memory>
+#include "memory"
 
 using namespace std;
 
-/// <summary>
-/// ゲームシーン
-/// </summary>
-class TitleScene : public BaseScene {
+class GameOverScene : public BaseScene {
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	TitleScene();
+	GameOverScene();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~TitleScene() override;
+	~GameOverScene() override;
 
 	/// <summary>
 	/// 初期化
@@ -42,10 +38,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+public:
 public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
 
-public://セッター
+public: // セッター
 	void SetNowPhase(int phase) override { nowPhase = phase; }
 
 private: // メンバ変数
@@ -54,37 +51,19 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	// 音
 	Audio* audio_ = nullptr;
-	//ビューポート
-	ViewProjection viewProjection_;
+	// ビューポート
+
 	// オブジェクト用ワールドトランスフォーム
-	WorldTransform worldTransformObject_;
+
 	// スプライト
-	uint32_t textureHandleTitleRogo_;
-	unique_ptr<Sprite> spriteTitleRogo_ = nullptr;
+	uint32_t textureHandleGameOver_;
+	unique_ptr<Sprite> spriteGameOver_ = nullptr;
 
 	// モデル
-	unique_ptr<Model> modelObject_ = nullptr;
+
 	// インスタンス
-	unique_ptr<TitleCamera> titleCamera_ = nullptr;
-	unique_ptr<TitlePlayer> titlePlayer_ = nullptr;
+
+	// コリジョンマネージャー
 
 private:
-	///アニメーション
-	//カメラ移動
-	bool isCameraTransition_ = false;
-	int cameraTransitionTimer_ = 0;
-	const int kCameraTransitionTime_ = 100;
-	//深淵のぞく
-	bool isLookHole_ = false;
-	int lookHoleTimer_ = 0;
-	const int kLookHoleTime_ = 50;
-
-	//ジャンプイン
-	bool isJumpIn_ = false;
-	int jumpInTimer_ = 0;
-	const int kJumpInTime_ = 60;
-
-	//遷移中
-	bool isMoveScene = false;
-
 };

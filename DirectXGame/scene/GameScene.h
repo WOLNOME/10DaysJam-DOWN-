@@ -51,7 +51,14 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
-	void CheckAllCollision();
+
+public://ゲッター
+	SCENE GetNextScene() override { return NextScene; }
+	//インスタンス
+	Wall* GetWall() { return wall_.get(); }
+
+public:
+	void SetNowPhase(int phase) override { nowPhase = phase; }
 
 	/// <summary>
 	/// 敵の生成関数

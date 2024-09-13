@@ -110,6 +110,32 @@ void GameScene::Update() {
 #ifdef _DEBUG
 	collisionManager_->ImGuiDraw();
 
+	// 
+
+
+
+
+
+	switch (nowPhase) {
+	case 0:
+		// 休憩ポイントに着地したら休憩シーンへ
+		if (wall_->GetIsLanding() && NextScene == Game) {
+			NextScene = Rest;
+		}
+		break;
+	case 1:
+		// 2回目の休憩ポイントに着地したらクリアシーンへ
+		if (wall_->GetIsLanding() && NextScene == Game) {
+			NextScene = Clear;
+		}
+		break;
+	default:
+		break;
+	}
+	
+
+
+#ifdef _DEBUG
 	ImGui::Begin("GameSceneNow");
 
 	ImGui::End();

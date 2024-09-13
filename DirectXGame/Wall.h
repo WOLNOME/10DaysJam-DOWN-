@@ -24,7 +24,8 @@ public://ゲッター
 	float GetKWallLength() { return kWallLength_; }
 	//落下速度
 	float GetFallingSpeed() { return fallVelocity_.y; }
-
+	//着地判定
+	bool GetIsLanding() { return isLanding_; }
 
 public://セッター
 	void SetFallVelocity(const Vector3& velocity) { fallVelocity_ = velocity; }
@@ -49,7 +50,7 @@ private:
 
 private://フェーズ処理変数
 	//各フェーズの時間
-	const int kPhaseTime_ = 60 * 40;
+	const int kPhaseTime_ = 60 * 1;
 	//フェーズタイマー
 	int phaseTimer_ = 0;
 	//プレイヤーの身長(カメラと地面の距離)

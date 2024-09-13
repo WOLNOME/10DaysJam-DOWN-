@@ -77,7 +77,7 @@ void TitlePlayer::Update(ViewProjection& viewProjection) {
 	}
 
 	// 落下可能範囲判断
-	if (worldTransformBody_.translation_.x < 5.5f && worldTransformBody_.translation_.x > -5.5f && worldTransformBody_.translation_.z < 5.5f && worldTransformBody_.translation_.z > -5.5f) {
+	if (!isStart_&&worldTransformBody_.translation_.x < 5.5f && worldTransformBody_.translation_.x > -5.5f && worldTransformBody_.translation_.z < 5.5f && worldTransformBody_.translation_.z > -5.5f) {
 		isReady_ = true;
 	} else {
 		isReady_ = false;

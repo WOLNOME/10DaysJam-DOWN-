@@ -1,31 +1,31 @@
 #pragma once
 #include "Audio.h"
 #include "BaseScene.h"
+#include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "Input.h"
 #include "ViewProjection.h"
-#include "TitleCamera.h"
-#include "TitlePlayer.h"
-#include <memory>
+#include "RestPlayer.h"
+#include "RestCamera.h"
+#include "RestItem.h"
+#include "CollisionManagerUshio.h"
+#include "memory"
 
 using namespace std;
 
-/// <summary>
-/// ゲームシーン
-/// </summary>
-class TitleScene : public BaseScene {
+class RestScene : public BaseScene {
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	TitleScene();
+	RestScene();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~TitleScene() override;
+	~RestScene() override;
 
 	/// <summary>
 	/// 初期化
@@ -42,10 +42,13 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+public:
+	void CheckAllCollision();
+
 public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
 
-public://セッター
+public: // セッター
 	void SetNowPhase(int phase) override { nowPhase = phase; }
 
 private: // メンバ変数
@@ -54,37 +57,29 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	// 音
 	Audio* audio_ = nullptr;
-	//ビューポート
+	// ビューポート
 	ViewProjection viewProjection_;
 	// オブジェクト用ワールドトランスフォーム
-	WorldTransform worldTransformObject_;
+	WorldTransform worldTransformBeforeObject_;
+	WorldTransform worldTransformAfterObject_;
 	// スプライト
-	uint32_t textureHandleTitleRogo_;
-	unique_ptr<Sprite> spriteTitleRogo_ = nullptr;
-
+	
 	// モデル
-	unique_ptr<Model> modelObject_ = nullptr;
+	unique_ptr<Model> modelBeforeObject_ = nullptr;
+	unique_ptr<Model> modelAfterObject_ = nullptr;
+
+
 	// インスタンス
-	unique_ptr<TitleCamera> titleCamera_ = nullptr;
-	unique_ptr<TitlePlayer> titlePlayer_ = nullptr;
+	unique_ptr<RestCamera> restCamera_ = nullptr;
+	unique_ptr<RestPlayer> restPlayer_ = nullptr;
+	unique_ptr<RestItem> restItem_ = nullptr;
+
+	//コリジョンマネージャー
+	unique_ptr<CollisionManagerUshio> collisionManager_ = nullptr;
+
 
 private:
-	///アニメーション
-	//カメラ移動
-	bool isCameraTransition_ = false;
-	int cameraTransitionTimer_ = 0;
-	const int kCameraTransitionTime_ = 100;
-	//深淵のぞく
-	bool isLookHole_ = false;
-	int lookHoleTimer_ = 0;
-	const int kLookHoleTime_ = 50;
-
-	//ジャンプイン
-	bool isJumpIn_ = false;
-	int jumpInTimer_ = 0;
-	const int kJumpInTime_ = 60;
-
-	//遷移中
-	bool isMoveScene = false;
+	//強化済みフラグ
+	bool isEnhanced = false;
 
 };
