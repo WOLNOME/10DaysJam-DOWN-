@@ -1,6 +1,7 @@
 #include "GameScene.h"
 #include "ImGuiManager.h"
 #include "TextureManager.h"
+#include "WinApp.h"
 #include <cassert>
 
 GameScene::GameScene() {
@@ -20,9 +21,9 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	viewProjection_.Initialize();
 
 	// スプライトテクスチャ
-
+	textureHandleOperationUI_ = TextureManager::Load("UI/OperationUI.png");
 	// スプライトの生成
-
+	spriteOperationUI_.reset(Sprite::Create(textureHandleOperationUI_, {WinApp::kWindowWidth / 2.0f, WinApp::kWindowHeight / 2.0f}, {1, 1, 1, 1}, {0.5f, 0.5f}));
 	// モデルテクスチャ
 
 	// モデルの生成
@@ -193,6 +194,7 @@ void GameScene::Draw() {
 	/// </summary>
 
 	player_->DrawUI();
+	spriteOperationUI_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
