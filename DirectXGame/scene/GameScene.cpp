@@ -55,22 +55,11 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	// enemyPopData読み込み
 	LoadEnemyPopData("./csv/enemyPop.csv");
 
-	// サウンドデータの読み込み
-	gameSceneSoundDataHandle_ = audio_->LoadWave("./Sound/BGM/gameSceneBGM.wav");
-	
-	// 音声再生
-	voiceHandle_ = audio_->PlayWave(gameSceneSoundDataHandle_, true);
-	audio_->SetVolume(voiceHandle_, 0.2f);
-
 	// カーソルを非表示
 	ShowCursor(false);
 }
 
 void GameScene::Update() {
-	// 音声が止まってたら再生
-	if (audio_->IsPlaying(voiceHandle_)) {
-		audio_->ResumeWave(voiceHandle_);
-	}
 
 	// 死亡した敵の削除
 	enemies_.remove_if([](unique_ptr<Enemy>& enemy) {
@@ -125,18 +114,12 @@ void GameScene::Update() {
 	case 0:
 		// 休憩ポイントに着地したら休憩シーンへ
 		if (wall_->GetIsLanding() && NextScene == Game) {
-			// 音声停止
-			audio_->StopWave(voiceHandle_);
-
 			NextScene = Rest;
 		}
 		break;
 	case 1:
 		// 2回目の休憩ポイントに着地したらクリアシーンへ
 		if (wall_->GetIsLanding() && NextScene == Game) {
-			// 音声停止
-			audio_->StopWave(voiceHandle_);
-
 			NextScene = Clear;
 		}
 		break;

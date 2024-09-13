@@ -84,12 +84,6 @@ private: // メンバ変数
 	unique_ptr<GameCamera> gameCamera_ = nullptr;
 	unique_ptr<Wall> wall_ = nullptr;
 
-	// サウンドデータハンドル
-	uint32_t gameSceneSoundDataHandle_ = 0;
-
-	// 音声再生ハンドル
-	uint32_t voiceHandle_ = 0;
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
