@@ -187,7 +187,12 @@ void GameScene::CheckAllCollision() {
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(obstacles_.get());
 
-	list<unique_ptr<PlayerBullet>> playerBullets = player_->GetBullets();
+	const list<PlayerBullet*>& playerBullets=player_->GetBullets();
+	if (playerBullets.max_size() > 0) {
+		for (auto& playerBullet : playerBullets) {
+			collisionManager_->AddCollider(playerBullet);
+		}
+	}
 
 	if (enemies_.max_size() > 0) {
 		for (auto& enemy : enemies_) {

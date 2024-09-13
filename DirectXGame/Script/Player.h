@@ -20,6 +20,7 @@ class Wall;
 
 class Player : public BaseCharacter {
 public:
+	~Player();
 
 	/// <summary>
 	/// 初期化
@@ -77,7 +78,7 @@ public:
 	/// </summary>
 	Vector3 Get3DReticleWorldPosition();
 
-	list<unique_ptr<PlayerBullet>> GetBullets() const { return bullets_; }
+	const list<PlayerBullet*> GetBullets() { return bullets_; }
 
 	/// <summary>
 	/// デスフラグ
@@ -128,7 +129,7 @@ private:
 	float kCharacterSpeed_;
 
 	// 弾
-	list<unique_ptr<PlayerBullet>> bullets_;
+	list<PlayerBullet*> bullets_;
 	const float kReLoadTime_ = 10.0f;
 	float reLoadTimer_;
 

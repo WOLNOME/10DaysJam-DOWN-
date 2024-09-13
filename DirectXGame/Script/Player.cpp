@@ -5,6 +5,11 @@
 #include <cmath>
 #include <cassert>
 
+Player::~Player() {
+	//削除
+	bullets_.clear();
+}
+
 /// 初期化
 void Player::Initialize(const std::vector<Model*> models) {
 	// 3Dモデルの生成
@@ -286,12 +291,12 @@ Vector3 Player::Get3DReticleWorldPosition() {
 /// 弾の生成
 void Player::CreateBullet(Model* model, const Vector3& pos, const Vector3& velocity) {
 	// 新しい弾の生成
-	unique_ptr<PlayerBullet> bullet = make_unique<PlayerBullet>();
+	PlayerBullet* bullet = new PlayerBullet();
 
 	bullet->Initialize(model, pos, velocity);
 
 	// 弾をリストにセット
-	bullets_.push_back(move(bullet));
+	bullets_.push_back(bullet);
 }
 
 /// 衝突判定
