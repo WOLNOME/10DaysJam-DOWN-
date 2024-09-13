@@ -31,6 +31,11 @@ void Player::Initialize(const std::vector<Model*> models) {
 	mouseMove_ = {0.0f, 0.0f};
 	fallingVelocity_ = {0.0f, 8.0f, 0.0f};
 	fallingVelocityJet_ = {0.0f, 3.0f, 0.0f};
+
+	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeId::kPlayer));
+
+	// プレイヤーの半径
+	Collider::SetRadius(1.0f);
 }
 
 /// 更新

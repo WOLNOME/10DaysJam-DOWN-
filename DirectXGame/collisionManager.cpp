@@ -30,6 +30,8 @@ void CollisionManager::Draw(const ViewProjection& viewProjection) {
 void CollisionManager::Reset() { colliders_.clear(); }
 
 void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* colliderB) {
+	assert(colliderA != nullptr);
+	assert(colliderB != nullptr);
 	// 衝突判定
 	Vector3 posA = colliderA->GetCenter();
 	Vector3 posB = colliderB->GetCenter();
@@ -44,6 +46,8 @@ void CollisionManager::CheckCollisionPair(Collider* colliderA, Collider* collide
 }
 
 void CollisionManager::CheckAllCollisions() {
+	assert(colliders_.size() > 0);
+
 	// すべてのコライダーのペアをチェック
 	std::list<Collider*>::iterator itA = colliders_.begin();
 	for (; itA != colliders_.end(); ++itA) {
