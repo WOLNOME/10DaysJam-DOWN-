@@ -51,9 +51,13 @@ public:
 	/// <param name="viewProjection">ビュープロジェクション</param>
 	void Draw(ViewProjection& viewProjection);
 
+	void DrawUI();
+
 public:
 	void OnCollision([[maybe_unused]] Collider* other) override;
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
+	void Item();
+	bool GetIsGetItem() { return isGetItem_; }
 
 private:
 	WorldTransform worldTransform_;
@@ -74,4 +78,7 @@ private:
 
 	//プレイヤーの身長
 	const float playerHeight_ = 1.0f;
+	//アイテム獲得フラグ
+	bool isGetItem_ = false;
+
 };

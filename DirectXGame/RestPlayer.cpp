@@ -153,3 +153,5 @@ Vector3 RestPlayer::GetCenter() const {
 void RestPlayer::Draw(ViewProjection& viewProjection) { viewProjection; }
 
 void RestPlayer::OnCollision(Collider* other) { other; }
+
+
