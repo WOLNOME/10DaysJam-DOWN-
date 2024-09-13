@@ -97,6 +97,10 @@ private: // メンバ変数
 	//衝突マネージャ―
 	unique_ptr<CollisionManager> collisionManager_ = nullptr;
 	
+	//スプライト
+	uint32_t textureHandleOperationUI_;
+	unique_ptr<Sprite> spriteOperationUI_ = nullptr;
+
 	// 自キャラ
 	unique_ptr<Player> player_ = nullptr;
 
