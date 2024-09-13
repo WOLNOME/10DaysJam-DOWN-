@@ -1,7 +1,6 @@
 #pragma once
 #include "collider.h"
 #include <Input.h>
-#include <algorithm>
 #include "Model.h"
 #include "WinApp.h"
 #include "TextureManager.h"
@@ -10,10 +9,11 @@
 #include "Script/MyTools.h"
 #include "Script/Matrix.h"
 
-class RestPlayer : public Collider {
+
+class RestItem : public Collider {
 public:
-	RestPlayer();
-	~RestPlayer()override;
+	RestItem();
+	~RestItem() override;
 
 	/// <summary>
 	/// 初期化
@@ -54,28 +54,7 @@ public:
 public:
 	void OnCollision([[maybe_unused]] Collider* other) override;
 	WorldTransform& GetWorldTransform() { return worldTransform_; }
-	bool GetIsGetItem() { return isGetItem_; }
-
+	
 private:
 	WorldTransform worldTransform_;
-
-	// キーボード入力
-	Input* input_ = nullptr;
-
-	// 自キャラの速さ
-	float kCharacterSpeed = 0.1f;
-
-	// カーソルの移動量
-	Vector2 mouseMove = {0.0f, 0.0f};
-	Vector2 mousePosPre;
-	const Vector2 mouseCenter = {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2};
-	Vector2 mousePos;
-
-	bool isDebug_ = false;
-
-	//プレイヤーの身長
-	const float playerHeight_ = 1.0f;
-	//アイテム獲得フラグ
-	bool isGetItem_ = false;
-
 };

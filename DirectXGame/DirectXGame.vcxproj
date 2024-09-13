@@ -120,6 +120,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Obstacles.cpp" />
     <ClCompile Include="RestCamera.cpp" />
+    <ClCompile Include="RestItem.cpp" />
     <ClCompile Include="RestPlayer.cpp" />
     <ClCompile Include="RestScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="myFunction.h" />
     <ClInclude Include="Obstacles.h" />
     <ClInclude Include="RestCamera.h" />
+    <ClInclude Include="RestItem.h" />
     <ClInclude Include="RestPlayer.h" />
     <ClInclude Include="RestScene.h" />
     <ClInclude Include="SceneManager.h" />
