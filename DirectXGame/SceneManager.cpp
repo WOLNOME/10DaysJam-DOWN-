@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "ClearScene.h"
 
 SceneManager::SceneManager() {}
 
@@ -91,6 +92,11 @@ void SceneManager::ChangeScene() {
 			CurrentScene_ = m_pScene->GetNextScene();
 			;
 			break;
+		case SCENE::Clear:
+			m_pScene = std::make_unique<ClearScene>(); // クリアシーンを現在のシーンにする
+			m_pScene->Initialize(input_, audio_);
+			CurrentScene_ = m_pScene->GetNextScene();
+			;
 		default:
 			break;
 		}
