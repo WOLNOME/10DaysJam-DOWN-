@@ -60,6 +60,7 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 }
 
 void GameScene::Update() {
+
 	// 死亡した敵の削除
 	enemies_.remove_if([](unique_ptr<Enemy>& enemy) {
 		if (enemy->IsDead()) {

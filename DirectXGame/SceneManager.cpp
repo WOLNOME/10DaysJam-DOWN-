@@ -25,6 +25,13 @@ void SceneManager::Initialize() {
 	AnimationFrame_ = 0;
 	isInNow_ = false;
 	isOutNow_ = false;
+
+	// サウンドデータの読み込み
+	gameSceneSoundDataHandle_ = audio_->LoadWave("./Sound/BGM/gameSceneBGM.wav");
+
+	// 音声再生
+	voiceHandle_ = audio_->PlayWave(gameSceneSoundDataHandle_, true);
+	audio_->SetVolume(voiceHandle_, 0.2f);
 }
 
 void SceneManager::Update() {
