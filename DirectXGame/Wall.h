@@ -46,7 +46,7 @@ private:
 	//壁の長さ
 	const float kWallLength_ = 3200.0f;
 	//落下速度
-	Vector3 fallVelocity_ = {0.0f, 8.0f, 0.0f};
+	Vector3 fallVelocity_ = {0.0f, 5.0f, 0.0f};
 
 private://フェーズ処理変数
 	//各フェーズの時間
