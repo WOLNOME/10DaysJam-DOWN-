@@ -38,7 +38,13 @@ void Player::Initialize(const std::vector<Model*> models) {
 	// プレイヤーの半径
 	Collider::SetRadius(1.0f);
 
+	// リロード時間をセット
 	reLoadTimer_ = 0.0f;
+
+	// 体力セット
+	hp_ = kMaxHp_;
+
+	isDead_ = false;
 }
 
 /// 更新
@@ -61,39 +67,42 @@ void Player::Update(ViewProjection& viewProjection) {
 	}
 	ShowCursor(isDebug_);
 
-	ImGui::SetNextWindowPos(ImVec2(10, 30), ImGuiCond_Once);   // ウィンドウの座標(プログラム起動時のみ読み込み)
-	ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Once); // ウィンドウのサイズ(プログラム起動時のみ読み込み)
+	//ImGui::SetNextWindowPos(ImVec2(10, 30), ImGuiCond_Once);   // ウィンドウの座標(プログラム起動時のみ読み込み)
+	//ImGui::SetNextWindowSize(ImVec2(300, 400), ImGuiCond_Once); // ウィンドウのサイズ(プログラム起動時のみ読み込み)
 
 	ImGui::Begin("Player");
 
-	ImGui::DragFloat3("Translation", &worldTransform_.translation_.x, 0.05f);
+	//ImGui::DragFloat3("Translation", &worldTransform_.translation_.x, 0.05f);
 
-	const float kMoveLimitX = 48.0f;
-	const float kMoveLimitZ = 48.0f;
+	//const float kMoveLimitX = 48.0f;
+	//const float kMoveLimitZ = 48.0f;
 
-	// 制限
-	worldTransform_.translation_.x = MyTools::Clamp(worldTransform_.translation_.x, -kMoveLimitX, kMoveLimitX);
-	worldTransform_.translation_.z = MyTools::Clamp(worldTransform_.translation_.z, -kMoveLimitZ, kMoveLimitZ);
-	// 移動を消す
-	worldTransform_.translation_.y = 0;
+	//// 制限
+	//worldTransform_.translation_.x = MyTools::Clamp(worldTransform_.translation_.x, -kMoveLimitX, kMoveLimitX);
+	//worldTransform_.translation_.z = MyTools::Clamp(worldTransform_.translation_.z, -kMoveLimitZ, kMoveLimitZ);
+	//// 移動を消す
+	//worldTransform_.translation_.y = 0;
 
-	ImGui::DragFloat3("Rotation", &worldTransform_.rotation_.x, 0.01f);
+	//ImGui::DragFloat3("Rotation", &worldTransform_.rotation_.x, 0.01f);
 
-	// 制限
-	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
-	// 回転を消す
-	worldTransform_.rotation_.z = 0.0f;
+	//// 制限
+	//worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
+	//// 回転を消す
+	//worldTransform_.rotation_.z = 0.0f;
 
-	ImGui::DragFloat2("mouseMove", &mouseMove_.x, 0.05f);
-	ImGui::DragFloat2("mousePos", &mousePos_.x, 0.05f);
+	//ImGui::DragFloat2("mouseMove", &mouseMove_.x, 0.05f);
+	//ImGui::DragFloat2("mousePos", &mousePos_.x, 0.05f);
 
-	ImGui::Text("Push P Key : mouseLock switching ");
-	ImGui::Checkbox("Debug", &isDebug_);
+	//ImGui::Text("Push P Key : mouseLock switching ");
+	//ImGui::Checkbox("Debug", &isDebug_);
 
-	ImGui::DragFloat3("fallVelocity", &fallingVelocity_.x, 0.05f);
-	ImGui::DragFloat3("fallVelocityJet", &fallingVelocityJet_.x, 0.05f);
+	//ImGui::DragFloat3("fallVelocity", &fallingVelocity_.x, 0.05f);
+	//ImGui::DragFloat3("fallVelocityJet", &fallingVelocityJet_.x, 0.05f);
 
-	ImGui::DragFloat("ReLoadTimer", &reLoadTimer_, 0.05f);
+	//ImGui::DragFloat("ReLoadTimer", &reLoadTimer_, 0.05f);
+
+	ImGui::Text("HP : %d", hp_);
+	ImGui::Checkbox("isDead", &isDead_);
 
 	ImGui::End();
 
@@ -283,6 +292,24 @@ void Player::CreateBullet(Model* model, const Vector3& pos, const Vector3& veloc
 
 	// 弾をリストにセット
 	bullets_.push_back(move(bullet));
+}
+
+/// 衝突判定
+void Player::OnCollision([[maybe_unused]] Collider* other) {
+	// 衝突相手の種別IDを取得
+	uint32_t typeID = other->GetTypeID();
+
+	// 衝突相手が敵 又は 敵の弾の場合
+	if (typeID == static_cast<uint32_t>(CollisionTypeId::kEnemy) || typeID == static_cast<uint32_t>(CollisionTypeId::kEnemyBullet)) {
+		// 体力減少
+		hp_--;
+
+		// 体力がなくなった時
+		if (hp_ <= 0) {
+			isDead_ = true;
+			return;
+		}
+	}	
 }
 
 /// 描画

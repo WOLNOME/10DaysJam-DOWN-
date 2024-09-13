@@ -77,6 +77,14 @@ public:
 	/// </summary>
 	Vector3 Get3DReticleWorldPosition();
 
+	list<unique_ptr<PlayerBullet>> GetBullets() const { return bullets_; }
+
+	/// <summary>
+	/// デスフラグ
+	/// </summary>
+	/// <returns></returns>
+	bool IsDead() const { return isDead_; }
+
 	/// <summary>
 	/// 壁をセット
 	/// </summary>
@@ -87,6 +95,11 @@ public:
 	/// 弾の生成
 	/// </summary>
 	void CreateBullet(Model* model, const Vector3& pos, const Vector3& velocity);
+
+	/// <summary>
+	/// 衝突判定
+	/// </summary>
+	void OnCollision([[maybe_unused]] Collider* other) override;
 
 	/// <summary>
 	/// 描画
@@ -130,4 +143,11 @@ private:
 	// 落下速度
 	Vector3 fallingVelocity_;
 	Vector3 fallingVelocityJet_;
+
+	// 体力
+	const int kMaxHp_ = 5;
+	int hp_;
+
+	// デスフラグ
+	bool isDead_;
 };

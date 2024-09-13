@@ -240,6 +240,7 @@ void Enemy::Update() {
 	ImGui::Begin("Enemy");
 
 	ImGui::DragFloat3("Translation", &worldTransform_.translation_.x, 0.05f);
+	ImGui::Checkbox("IsDead", &isDead_);
 
 	ImGui::End();
 
@@ -273,6 +274,11 @@ void Enemy::OnCollision([[maybe_unused]] Collider* other) {
 		if (enemyType_ == EnemyType::kFollow) {
 			isDead_ = true;
 		}
+	}
+
+	// 衝突相手がプレイヤーの弾の場合
+	if (typeID == static_cast<uint32_t>(CollisionTypeId::kPlayerBullet)) {
+		isDead_ = true;
 	}
 
 	// 衝突相手が敵の場合

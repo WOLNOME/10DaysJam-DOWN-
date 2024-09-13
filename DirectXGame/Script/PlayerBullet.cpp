@@ -19,7 +19,7 @@ void PlayerBullet::Initialize(Model* model, const Vector3& pos, const Vector3& v
 
 	Collider::SetTypeID(static_cast<uint32_t>(CollisionTypeId::kPlayerBullet));
 
-	Collider::SetRadius(1.0f);
+	Collider::SetRadius(1.5f);
 }
 
 void PlayerBullet::Update() {
@@ -38,7 +38,7 @@ void PlayerBullet::Update() {
 #ifdef _DEBUG
 	ImGui::Begin("PlayerBullet");
 
-	ImGui::DragFloat3("Velocity", &velocity_.x, 0.05f);
+	ImGui::DragFloat3("Transform", &worldTransform_.translation_.x, 0.05f);
 
 	ImGui::End();
 

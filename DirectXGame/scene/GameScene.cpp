@@ -108,8 +108,6 @@ void GameScene::Update() {
 	CheckAllCollision();
 
 #ifdef _DEBUG
-	collisionManager_->ImGuiDraw();
-
 	ImGui::Begin("GameSceneNow");
 
 	ImGui::End();
@@ -188,6 +186,9 @@ void GameScene::CheckAllCollision() {
 	// コライダーリストに登録
 	collisionManager_->AddCollider(player_.get());
 	collisionManager_->AddCollider(obstacles_.get());
+
+	list<unique_ptr<PlayerBullet>> playerBullets = player_->GetBullets();
+
 	if (enemies_.max_size() > 0) {
 		for (auto& enemy : enemies_) {
 			collisionManager_->AddCollider(enemy.get());
