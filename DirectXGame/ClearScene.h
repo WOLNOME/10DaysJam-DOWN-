@@ -1,31 +1,27 @@
 #pragma once
-#include "Audio.h"
 #include "BaseScene.h"
+#include "Audio.h"
 #include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "Input.h"
 #include "ViewProjection.h"
-#include "RestPlayer.h"
-#include "RestCamera.h"
-#include "RestItem.h"
-#include "CollisionManagerUshio.h"
 #include "memory"
 
 using namespace std;
 
-class RestScene : public BaseScene {
+class ClearScene : public BaseScene {
 public: // メンバ関数
 	/// <summary>
 	/// コンストクラタ
 	/// </summary>
-	RestScene();
+	ClearScene();
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	~RestScene() override;
+	~ClearScene() override;
 
 	/// <summary>
 	/// 初期化
@@ -43,7 +39,6 @@ public: // メンバ関数
 	void Draw() override;
 
 public:
-	void CheckAllCollision();
 
 public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
@@ -55,28 +50,20 @@ private: // メンバ変数
 	// 音
 	Audio* audio_ = nullptr;
 	// ビューポート
-	ViewProjection viewProjection_;
-	// オブジェクト用ワールドトランスフォーム
-	WorldTransform worldTransformBeforeObject_;
-	WorldTransform worldTransformAfterObject_;
-	// スプライト
 	
+	// オブジェクト用ワールドトランスフォーム
+	
+	// スプライト
+	uint32_t textureHandleGameClear_;
+	unique_ptr<Sprite> spriteGameClear_ = nullptr;
+
 	// モデル
-	unique_ptr<Model> modelBeforeObject_ = nullptr;
-	unique_ptr<Model> modelAfterObject_ = nullptr;
-
-
+	
 	// インスタンス
-	unique_ptr<RestCamera> restCamera_ = nullptr;
-	unique_ptr<RestPlayer> restPlayer_ = nullptr;
-	unique_ptr<RestItem> restItem_ = nullptr;
+	
 
-	//コリジョンマネージャー
-	unique_ptr<CollisionManagerUshio> collisionManager_ = nullptr;
-
+	// コリジョンマネージャー
+	
 
 private:
-	//強化済みフラグ
-	bool isEnhanced = false;
-
 };

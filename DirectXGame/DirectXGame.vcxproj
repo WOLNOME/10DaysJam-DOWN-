@@ -111,11 +111,15 @@
     <ClCompile Include="BaseCharacter.cpp" />
     <ClCompile Include="base\DirectXCommon.cpp" />
     <ClCompile Include="base\WinApp.cpp" />
+    <ClCompile Include="ClearScene.cpp" />
     <ClCompile Include="collider.cpp" />
+    <ClCompile Include="ColliderUshio.cpp" />
     <ClCompile Include="collisionManager.cpp" />
+    <ClCompile Include="CollisionManagerUshio.cpp" />
     <ClCompile Include="collisionRecord.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="GameCamera.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="Gradation.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Obstacles.cpp" />
@@ -164,6 +168,10 @@
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="ClearScene.h" />
+    <ClInclude Include="ColliderUshio.h" />
+    <ClInclude Include="CollisionConfigUshio.h" />
+    <ClInclude Include="CollisionManagerUshio.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="collider.h" />
@@ -171,6 +179,7 @@
     <ClInclude Include="collisionRecord.h" />
     <ClInclude Include="collisionTypeIdDef.h" />
     <ClInclude Include="enemy.h" />
+    <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="Gradation.h" />
     <ClInclude Include="input\Input.h" />
     <ClInclude Include="math\Matrix4x4.h" />

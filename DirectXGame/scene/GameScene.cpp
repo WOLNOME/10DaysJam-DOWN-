@@ -39,7 +39,6 @@ void GameScene::Initialize(Input* input, Audio* audio) {
 	gameCamera_->SetParent(&player_->GetWorldTransform());
 	obstacles_->SetGameScene(this);
 
-
 	// インスタンス初期化
 	gameCamera_->Initialize();
 	wall_->Initialize();

@@ -49,7 +49,7 @@ private:
 
 private://フェーズ処理変数
 	//各フェーズの時間
-	const int kPhaseTime_ = 60 * 5;
+	const int kPhaseTime_ = 60 * 1;
 	//フェーズタイマー
 	int phaseTimer_ = 0;
 	//プレイヤーの身長(カメラと地面の距離)
