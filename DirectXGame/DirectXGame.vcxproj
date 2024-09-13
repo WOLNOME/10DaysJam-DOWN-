@@ -131,7 +131,6 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Matrix4x4Function.cpp" />
     <ClCompile Include="myFunction.cpp" />
-    <ClCompile Include="scene\ClearScene.cpp" />
     <ClCompile Include="scene\GameScene.cpp" />
     <ClCompile Include="Script\Matrix.cpp" />
     <ClCompile Include="Script\MyBase.cpp" />
@@ -198,7 +197,6 @@
     <ClInclude Include="RestPlayer.h" />
     <ClInclude Include="RestScene.h" />
     <ClInclude Include="SceneManager.h" />
-    <ClInclude Include="scene\ClearScene.h" />
     <ClInclude Include="scene\GameScene.h" />
     <ClInclude Include="Script\Matrix.h" />
     <ClInclude Include="Script\MyBase.h" />
