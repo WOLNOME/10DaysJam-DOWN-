@@ -128,6 +128,7 @@
     <ClCompile Include="Script\MyBase.cpp" />
     <ClCompile Include="Script\MyTools.cpp" />
     <ClCompile Include="Script\Player.cpp" />
+    <ClCompile Include="Script\PlayerBullet.cpp" />
     <ClCompile Include="TitleCamera.cpp" />
     <ClCompile Include="TitlePlayer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Script\MyBase.h" />
     <ClInclude Include="Script\MyTools.h" />
     <ClInclude Include="Script\Player.h" />
+    <ClInclude Include="Script\PlayerBullet.h" />
     <ClInclude Include="TitleCamera.h" />
     <ClInclude Include="TitlePlayer.h" />
     <ClInclude Include="TitleScene.h" />

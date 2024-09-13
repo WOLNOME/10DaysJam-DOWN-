@@ -1,6 +1,7 @@
 #pragma once
 #include <Input.h>
 #include <algorithm>
+#include <memory>
 #include "Model.h"
 #include "WinApp.h"
 #include "TextureManager.h"
@@ -10,6 +11,9 @@
 #include "Matrix.h"
 #include "BaseCharacter.h"
 #include "collisionTypeIdDef.h"
+#include "PlayerBullet.h"
+
+using namespace std;
 
 /// Wallの前方宣言
 class Wall;
@@ -42,7 +46,17 @@ public:
 	/// マウスでの視点移動
 	/// </summary>
 	void MouseMove();
+
+	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
 	
+	/// <summary>
+	/// 弾発射
+	/// </summary>
+	void Fire();
+
 	/// <summary>
 	/// ワールド座標から3Dレティクルの座標を計算
 	/// </summary>
@@ -70,6 +84,11 @@ public:
 	void SetWall(Wall* wall) { wall_ = wall; }
 
 	/// <summary>
+	/// 弾の生成
+	/// </summary>
+	void CreateBullet(Model* model, const Vector3& pos, const Vector3& velocity);
+
+	/// <summary>
 	/// 描画
 	/// </summary>
 	/// <param name="viewProjection">ビュープロジェクション</param>
@@ -83,6 +102,7 @@ public:
 private:
 	WorldTransform worldTransform3DReticle_;
 
+	unique_ptr<Model> bulletModel_;
 	Sprite* sprite2DReticle_ = nullptr;
 
 	// キーボード入力
@@ -93,6 +113,11 @@ private:
 
 	// 自キャラの速さ
 	float kCharacterSpeed_;
+
+	// 弾
+	list<unique_ptr<PlayerBullet>> bullets_;
+	const float kReLoadTime_ = 10.0f;
+	float reLoadTimer_;
 
 	// カーソルの移動量
 	Vector2 mouseMove_;

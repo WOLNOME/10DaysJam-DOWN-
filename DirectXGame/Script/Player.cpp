@@ -9,6 +9,7 @@
 void Player::Initialize(const std::vector<Model*> models) {
 	// 3Dモデルの生成
 	BaseCharacter::Initialize(models);
+	bulletModel_.reset(Model::CreateFromOBJ("player"));
 
 	worldTransform3DReticle_.Initialize();
 	worldTransform3DReticle_.UpdateMatrix();
@@ -36,10 +37,16 @@ void Player::Initialize(const std::vector<Model*> models) {
 
 	// プレイヤーの半径
 	Collider::SetRadius(1.0f);
+
+	reLoadTimer_ = 0.0f;
 }
 
 /// 更新
 void Player::Update(ViewProjection& viewProjection) {
+	for (auto& bullet : bullets_) {
+		bullet->Update();
+	}
+
 	if (!isDebug_) {
 		// マウスによる視点移動
 		MouseMove();
@@ -86,6 +93,8 @@ void Player::Update(ViewProjection& viewProjection) {
 	ImGui::DragFloat3("fallVelocity", &fallingVelocity_.x, 0.05f);
 	ImGui::DragFloat3("fallVelocityJet", &fallingVelocityJet_.x, 0.05f);
 
+	ImGui::DragFloat("ReLoadTimer", &reLoadTimer_, 0.05f);
+
 	ImGui::End();
 
 #endif // _DEBUG
@@ -95,6 +104,9 @@ void Player::Update(ViewProjection& viewProjection) {
 
 	WorldTo3DReticle();
 	Reticle3Dto2D(viewProjection);
+
+	// 攻撃処理
+	Attack();
 
 	// ジェットパックの処理
 	if (input_->TriggerKey(DIK_SPACE) || input_->PushKey(DIK_SPACE)) {
@@ -178,6 +190,35 @@ void Player::MouseMove() {
 	worldTransform_.rotation_.x = MyTools::Clamp(worldTransform_.rotation_.x, 0.0f, float(M_PI_2));
 }
 
+/// 攻撃
+void Player::Attack() {
+	// リロードが終わっている時
+	if (reLoadTimer_ <= 0) {
+		// 左クリックが押されている時
+		if (input_->IsPressMouse(0)) {
+			// 弾発射
+			Fire();
+
+			// リロード時間をセット
+			reLoadTimer_ = kReLoadTime_;
+		}
+	}
+
+	// リロード時間の経過処理
+	reLoadTimer_--;
+}
+
+/// 弾発射
+void Player::Fire() {
+	// 弾の速度
+	float speed = 0.5f;
+	// レティクルの方向を取得(正規化済み)
+	Vector3 reticleDir = MyTools::Normalize(Get3DReticleWorldPosition() - GetCenter());
+	
+	// 弾の生成
+	CreateBullet(bulletModel_.get(), GetCenter(), reticleDir * speed);
+}
+
 /// ワールド座標から3Dレティクルの座標を計算
 void Player::WorldTo3DReticle() {
 	// 自機から3Dレティクルの距離
@@ -233,9 +274,24 @@ Vector3 Player::Get3DReticleWorldPosition() {
 	return worldPos;
 }
 
+/// 弾の生成
+void Player::CreateBullet(Model* model, const Vector3& pos, const Vector3& velocity) {
+	// 新しい弾の生成
+	unique_ptr<PlayerBullet> bullet = make_unique<PlayerBullet>();
+
+	bullet->Initialize(model, pos, velocity);
+
+	// 弾をリストにセット
+	bullets_.push_back(move(bullet));
+}
+
 /// 描画
 void Player::Draw(ViewProjection& viewProjection) { 
 	BaseCharacter::Draw(viewProjection); 
+
+	for (auto& bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
 }
 
 void Player::DrawUI() {

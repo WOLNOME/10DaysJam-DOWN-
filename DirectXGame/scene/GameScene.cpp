@@ -108,6 +108,8 @@ void GameScene::Update() {
 	CheckAllCollision();
 
 #ifdef _DEBUG
+	collisionManager_->ImGuiDraw();
+
 	ImGui::Begin("GameSceneNow");
 
 	ImGui::End();
