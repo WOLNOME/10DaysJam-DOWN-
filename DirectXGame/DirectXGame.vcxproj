@@ -115,6 +115,7 @@
     <ClCompile Include="collisionManager.cpp" />
     <ClCompile Include="collisionRecord.cpp" />
     <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="EnemyBullet.cpp" />
     <ClCompile Include="GameCamera.cpp" />
     <ClCompile Include="Gradation.cpp" />
     <ClCompile Include="main.cpp" />
@@ -127,6 +128,9 @@
     <ClCompile Include="Script\MyBase.cpp" />
     <ClCompile Include="Script\MyTools.cpp" />
     <ClCompile Include="Script\Player.cpp" />
+    <ClCompile Include="Script\PlayerBullet.cpp" />
+    <ClCompile Include="TitleCamera.cpp" />
+    <ClCompile Include="TitlePlayer.cpp" />
     <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="Wall.cpp" />
     <ClCompile Include="Vector3Function.cpp" />
@@ -158,6 +162,7 @@
     <ClInclude Include="base\StringUtility.h" />
     <ClInclude Include="base\TextureManager.h" />
     <ClInclude Include="base\WinApp.h" />
+    <ClInclude Include="EnemyBullet.h" />
     <ClInclude Include="Enum.h" />
     <ClInclude Include="GameCamera.h" />
     <ClInclude Include="collider.h" />
@@ -180,6 +185,9 @@
     <ClInclude Include="Script\MyBase.h" />
     <ClInclude Include="Script\MyTools.h" />
     <ClInclude Include="Script\Player.h" />
+    <ClInclude Include="Script\PlayerBullet.h" />
+    <ClInclude Include="TitleCamera.h" />
+    <ClInclude Include="TitlePlayer.h" />
     <ClInclude Include="TitleScene.h" />
     <ClInclude Include="Wall.h" />
     <ClInclude Include="Vector3Function.h" />

@@ -5,6 +5,9 @@
 #include "Model.h"
 #include "Sprite.h"
 #include "Input.h"
+#include "ViewProjection.h"
+#include "TitleCamera.h"
+#include "TitlePlayer.h"
 #include <memory>
 
 using namespace std;
@@ -48,12 +51,37 @@ private: // メンバ変数
 	Input* input_ = nullptr;
 	// 音
 	Audio* audio_ = nullptr;
-
+	//ビューポート
+	ViewProjection viewProjection_;
+	// オブジェクト用ワールドトランスフォーム
+	WorldTransform worldTransformObject_;
 	// スプライト
-	uint32_t textureHandleTitle_;
-	std::unique_ptr<Sprite> spriteTitle_ = nullptr;
+	uint32_t textureHandleTitleRogo_;
+	unique_ptr<Sprite> spriteTitleRogo_ = nullptr;
 
 	// モデル
-
+	unique_ptr<Model> modelObject_ = nullptr;
 	// インスタンス
+	unique_ptr<TitleCamera> titleCamera_ = nullptr;
+	unique_ptr<TitlePlayer> titlePlayer_ = nullptr;
+
+private:
+	///アニメーション
+	//カメラ移動
+	bool isCameraTransition_ = false;
+	int cameraTransitionTimer_ = 0;
+	const int kCameraTransitionTime_ = 100;
+	//深淵のぞく
+	bool isLookHole_ = false;
+	int lookHoleTimer_ = 0;
+	const int kLookHoleTime_ = 50;
+
+	//ジャンプイン
+	bool isJumpIn_ = false;
+	int jumpInTimer_ = 0;
+	const int kJumpInTime_ = 60;
+
+	//遷移中
+	bool isMoveScene = false;
+
 };
