@@ -107,14 +107,6 @@ void GameScene::Update() {
 	// 当たり判定
 	CheckAllCollision();
 
-#ifdef _DEBUG
-	collisionManager_->ImGuiDraw();
-
-	// 
-
-
-
-
 
 	switch (nowPhase) {
 	case 0:

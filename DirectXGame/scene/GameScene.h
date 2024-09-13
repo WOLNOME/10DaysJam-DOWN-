@@ -51,11 +51,14 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+	void CheckAllCollision();
 
 public://ゲッター
 	SCENE GetNextScene() override { return NextScene; }
 	//インスタンス
 	Wall* GetWall() { return wall_.get(); }
+	// 敵の弾
+	list<unique_ptr<EnemyBullet>>& GetEnemyBullets() { return enemyBullets_; }
 
 public:
 	void SetNowPhase(int phase) override { nowPhase = phase; }
@@ -68,12 +71,6 @@ public:
 	void LoadEnemyPopData(const string& fileName);
 	void UpdateEnemyPopCommands();
 
-public://ゲッター
-	SCENE GetNextScene() override { return NextScene; }
-	//インスタンス
-	Wall* GetWall() { return wall_.get(); }
-	// 敵の弾
-	list<unique_ptr<EnemyBullet>>& GetEnemyBullets() { return enemyBullets_; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
