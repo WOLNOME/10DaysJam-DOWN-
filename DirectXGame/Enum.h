@@ -4,5 +4,6 @@ enum SCENE {
 	Title,
 	Game,
 	Rest,
-	Clear
+	Clear,
+	GameOver,
 };

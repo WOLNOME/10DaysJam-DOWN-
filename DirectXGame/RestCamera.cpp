@@ -1,24 +1,21 @@
-#include "GameCamera.h"
-#include "Script/Matrix.h"
+#include "RestCamera.h"
 
-GameCamera::GameCamera() {}
+RestCamera::RestCamera() {}
 
-GameCamera::~GameCamera() {}
+RestCamera::~RestCamera() {}
 
-void GameCamera::Initialize() {
+void RestCamera::Initialize() {
 	// 座標初期化
-	pos_ = {0.0f,0.0f,0.0f};
+	pos_ = {0.0f, 0.0f, 0.0f};
 	// ワールドトランスフォーム初期化
 	worldTransform_.Initialize();
 	worldTransform_.translation_ = pos_;
 	// ビュープロジェクションの初期化
 	viewProjection_.farZ = 3500.0f;
 	viewProjection_.Initialize();
-	
 }
 
-void GameCamera::Update() {
-
+void RestCamera::Update() {
 
 	// 行列の更新と転送
 	worldTransform_.UpdateMatrix();

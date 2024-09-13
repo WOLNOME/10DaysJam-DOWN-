@@ -36,4 +36,8 @@ private:
 	bool isInNow_;
 	bool isOutNow_;
 
+private:
+	//現在のフェーズ
+	int nowPhase = -1;
+
 };

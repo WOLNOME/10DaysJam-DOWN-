@@ -1,23 +1,27 @@
 #pragma once
 #include "BaseScene.h"
 #include "Audio.h"
+#include "WorldTransform.h"
 #include "DirectXCommon.h"
 #include "Model.h"
 #include "Sprite.h"
 #include "Input.h"
 #include "ViewProjection.h"
-#include "WorldTransform.h"
-#include <memory>
+#include "memory"
 
 using namespace std;
 
-/// <summary>
-/// クリアシーン
-/// </summary>
 class ClearScene : public BaseScene {
 public: // メンバ関数
+	/// <summary>
+	/// コンストクラタ
+	/// </summary>
 	ClearScene();
-	~ClearScene();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~ClearScene() override;
 
 	/// <summary>
 	/// 初期化
@@ -34,8 +38,13 @@ public: // メンバ関数
 	/// </summary>
 	void Draw() override;
 
+public:
+
 public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
+
+public: // セッター
+	void SetNowPhase(int phase) override { nowPhase = phase; }
 
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -44,14 +53,20 @@ private: // メンバ変数
 	// 音
 	Audio* audio_ = nullptr;
 	// ビューポート
-	ViewProjection viewProjection_;
-	// テクスチャ
-	uint32_t textureHandleClearRogo_;
-	uint32_t textureHandleSpaceUI_;
-	uint32_t textureHandleBack_;
+	
+	// オブジェクト用ワールドトランスフォーム
+	
 	// スプライト
-	unique_ptr<Sprite> spriteClearRogo_ = nullptr;
-	unique_ptr<Sprite> spriteSpaceUI_ = nullptr;
-	unique_ptr<Sprite> spriteBack_ = nullptr;
+	uint32_t textureHandleGameClear_;
+	unique_ptr<Sprite> spriteGameClear_ = nullptr;
 
+	// モデル
+	
+	// インスタンス
+	
+
+	// コリジョンマネージャー
+	
+
+private:
 };

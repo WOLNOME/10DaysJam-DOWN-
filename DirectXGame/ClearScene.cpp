@@ -1,8 +1,6 @@
 #include "ClearScene.h"
-#include "ImGuiManager.h"
 #include "TextureManager.h"
 #include "WinApp.h"
-#include <cassert>
 
 ClearScene::ClearScene() {
 	// 現在のシーンを設定
@@ -15,34 +13,32 @@ void ClearScene::Initialize(Input* input, Audio* audio) {
 	dxCommon_ = DirectXCommon::GetInstance();
 	input_ = input;
 	audio_ = audio;
-	// ビューポート初期化
-	viewProjection_.Initialize();
-	
+
 	// スプライトテクスチャ
-	textureHandleClearRogo_ = TextureManager::Load("Clear/ClearRogo.png");
-	textureHandleSpaceUI_ = TextureManager::Load("Clear/SpaceUI.png");
-	textureHandleBack_ = TextureManager::Load("Clear/ClearBack.png");
+	textureHandleGameClear_ = TextureManager::Load("Clear/gameClear.png");
 	// スプライトの生成
-	spriteClearRogo_.reset(Sprite::Create(textureHandleClearRogo_, {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2}, {1, 1, 1, 1}, {0.5f, 0.5f}));
-	spriteSpaceUI_.reset(Sprite::Create(textureHandleSpaceUI_, {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 4 * 3}, {1, 1, 1, 1}, {0.5f, 0.5f}));
-	spriteBack_.reset(Sprite::Create(textureHandleBack_, {WinApp::kWindowWidth / 2, WinApp::kWindowHeight / 2}, {1, 1, 1, 1}, {0.5f, 0.5f}));
+	spriteGameClear_.reset(Sprite::Create(textureHandleGameClear_, {WinApp::kWindowWidth / 2.0f, WinApp::kWindowHeight / 2.0f}, {1, 1, 1, 1}, {0.5f, 0.5f}));
+	// モデルの生成
+
+	// インスタンスの生成
+
+	// インスタンスに他クラスを参照
 	
-	// カーソルを表示
-	ShowCursor(true);
+	// インスタンス初期化
+	
+
 }
 
 void ClearScene::Update() {
-	// ビュープロジェクション行列の更新と転送
-	viewProjection_.TransferMatrix();
-
+	//シーン遷移
 	if (input_->TriggerKey(DIK_SPACE)) {
-		// タイトルシーンへ遷移
-		NextScene = Title;
+		if (NextScene == Clear) {
+			NextScene = Title;
+		}
 	}
 }
 
 void ClearScene::Draw() {
-
 	// コマンドリストの取得
 	ID3D12GraphicsCommandList* commandList = dxCommon_->GetCommandList();
 
@@ -53,7 +49,7 @@ void ClearScene::Draw() {
 	/// <summary>
 	/// ここに背景スプライトの描画処理を追加できる
 	/// </summary>
-	
+
 	// スプライト描画後処理
 	Sprite::PostDraw();
 	// 深度バッファクリア
@@ -68,6 +64,9 @@ void ClearScene::Draw() {
 	/// ここに3Dオブジェクトの描画処理を追加できる
 	/// </summary>
 
+	// モデル
+	
+
 	// 3Dオブジェクト描画後処理
 	Model::PostDraw();
 #pragma endregion
@@ -79,14 +78,11 @@ void ClearScene::Draw() {
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
 	/// </summary>
-	
-	spriteBack_->Draw();
 
-	spriteClearRogo_->Draw();
-	
-	spriteSpaceUI_->Draw();
+	spriteGameClear_->Draw();
 
 	// スプライト描画後処理
 	Sprite::PostDraw();
+
 #pragma endregion
 }
