@@ -90,6 +90,7 @@ void SceneManager::ChangeScene() {
 			;
 			break;
 		case SCENE::Game:
+			ShowCursor(false);
 			nowPhase++;
 			m_pScene = std::make_unique<GameScene>(); // ステージシーンを現在のシーンにする
 			m_pScene->SetNowPhase(nowPhase);
