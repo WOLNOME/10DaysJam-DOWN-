@@ -53,9 +53,9 @@ public: // メンバ関数
 
 	void CheckAllCollision();
 
-public://ゲッター
+public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
-	//インスタンス
+	// インスタンス
 	Wall* GetWall() { return wall_.get(); }
 	// 敵の弾
 	list<unique_ptr<EnemyBullet>>& GetEnemyBullets() { return enemyBullets_; }
@@ -71,20 +71,24 @@ public:
 	void LoadEnemyPopData(const string& fileName);
 	void UpdateEnemyPopCommands();
 
-
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
-	//入力
+	// 入力
 	Input* input_ = nullptr;
-	//音
+	// 音
 	Audio* audio_ = nullptr;
-	//ビュープロジェクション
+	// ビュープロジェクション
 	ViewProjection viewProjection_;
 
-	//インスタンス
+	// インスタンス
 	unique_ptr<GameCamera> gameCamera_ = nullptr;
 	unique_ptr<Wall> wall_ = nullptr;
-	
+
+	// サウンドデータハンドル
+	uint32_t gameSceneSoundDataHandle_ = 0;
+
+	// 音声再生ハンドル
+	uint32_t voiceHandle_ = 0;
 
 	/// <summary>
 	/// ゲームシーン用
