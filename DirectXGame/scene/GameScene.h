@@ -56,6 +56,9 @@ public://ゲッター
 	//インスタンス
 	Wall* GetWall() { return wall_.get(); }
 
+public:
+	void SetNowPhase(int phase) override { nowPhase = phase; }
+
 	/// <summary>
 	/// 敵の生成関数
 	/// </summary>

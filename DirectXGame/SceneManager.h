@@ -38,6 +38,6 @@ private:
 
 private:
 	//現在のフェーズ
-	int nowPhase
+	int nowPhase = -1;
 
 };

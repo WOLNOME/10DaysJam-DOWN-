@@ -43,6 +43,9 @@ public:
 public: // ゲッター
 	SCENE GetNextScene() override { return NextScene; }
 
+public: // セッター
+	void SetNowPhase(int phase) override { nowPhase = phase; }
+
 private: // メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	// 入力

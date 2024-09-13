@@ -83,13 +83,16 @@ void SceneManager::ChangeScene() {
 		// 次のシーンの挿入
 		switch (NextScene_) { // 引数のシーン
 		case SCENE::Title:
+			nowPhase = -1;
 			m_pScene = std::make_unique<TitleScene>(); // タイトルシーンを現在のシーンにする
 			m_pScene->Initialize(input_, audio_);
 			CurrentScene_ = m_pScene->GetNextScene();
 			;
 			break;
 		case SCENE::Game:
+			nowPhase++;
 			m_pScene = std::make_unique<GameScene>(); // ステージシーンを現在のシーンにする
+			m_pScene->SetNowPhase(nowPhase);
 			m_pScene->Initialize(input_, audio_);
 			CurrentScene_ = m_pScene->GetNextScene();
 			;
