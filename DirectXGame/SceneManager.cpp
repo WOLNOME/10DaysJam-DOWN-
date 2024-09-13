@@ -1,6 +1,7 @@
 #include "SceneManager.h"
 #include "GameScene.h"
 #include "TitleScene.h"
+#include "ClearScene.h"
 
 SceneManager::SceneManager() {}
 
@@ -12,11 +13,14 @@ void SceneManager::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	//シーンの生成
-	m_pScene = std::make_unique<TitleScene>();
+	//m_pScene = std::make_unique<TitleScene>();
+	m_pScene = std::make_unique<ClearScene>();
 	//シーンの初期化
 	m_pScene->Initialize(input_, audio_);
-	CurrentScene_ = Title;
-	NextScene_ = Title;
+	//CurrentScene_ = Title;
+	CurrentScene_ = Clear;
+	//NextScene_ = Title;
+	NextScene_ = Clear;
 	// シーン遷移生成
 	gradation_ = std::make_unique<Gradation>();
 	AnimationFrame_ = 0;
@@ -91,6 +95,11 @@ void SceneManager::ChangeScene() {
 			CurrentScene_ = m_pScene->GetNextScene();
 			;
 			break;
+		case SCENE::Clear:
+			m_pScene = std::make_unique<ClearScene>(); // クリアシーンを現在のシーンにする
+			m_pScene->Initialize(input_, audio_);
+			CurrentScene_ = m_pScene->GetNextScene();
+			;
 		default:
 			break;
 		}
